@@ -60,7 +60,7 @@ struct ContentView: View {
                             
                             
                             Button("Hinzufügen", action: {
-                                addRuns(runLength: Double(kilometerAmount) ?? 0, runMinutes: Double(minutesAmount) ?? 0, date: date)
+                                addRuns(runLength: Double(kilometerAmount.replacing(",", with: ".")) ?? 0, runMinutes: Double(minutesAmount.replacing(",", with: ".")) ?? 0, date: date)
                                 showRunSheet.toggle()
                             }).buttonStyle(.bordered)
                             
