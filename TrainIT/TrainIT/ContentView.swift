@@ -113,7 +113,7 @@ struct RunInsights: View {
 extension DateFormatter {
     static let displayDate: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMMM YYYY"
+        formatter.dateFormat = "d MMMM YYYY"
         return formatter
     }()
 }
@@ -130,19 +130,22 @@ struct RunRow: View {
             
             
             VStack(alignment: .leading) {
-                Text("Lauf " + run.runNumber.formatted())
-                    .font(Font.headline)
+                HStack {
+                    Text("Lauf " + run.runNumber.formatted())
+                        .font(Font.headline)
+                    
+                    Spacer()
+                    
+                    Text(DateFormatter.displayDate.string(from: run.date))
+                        .foregroundColor(.secondary)
+                        .font(.system(size: 13))
+                }
                 
                 HStack {
                     Text(run.runLength.formatted() + " km")
                     Text(run.runMinutes.formatted() + " min")
                 }.font(Font.subheadline)
             }
-            
-            Spacer()
-            
-            Text(DateFormatter.displayDate.string(from: run.date))
-                .foregroundColor(.secondary)
         }
     }
 }
