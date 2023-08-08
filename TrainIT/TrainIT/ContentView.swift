@@ -32,45 +32,18 @@ struct ContentView: View {
                     Image(systemName: "square.and.pencil")
                 }))
             }.sheet(isPresented: $showRunSheet, content: {
-                ZStack{
-                    HStack {
-                        Text("Lauf hinzufügen")
-                            .font(.largeTitle)
-                            .fontWeight(.medium)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                        
-                        Button("Abbrechen", role: .cancel, action: {showRunSheet.toggle()}).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                    }.padding()
-                    VStack(alignment: .center) {
-                        TextField("Anzahl der Kilometer", text: $kilometerAmount)
-                            .keyboardType(.decimalPad)
-                            .textFieldStyle(.roundedBorder)
-                        
-                        TextField("Anzahl der Minuten", text: $minutesAmount)
-                            .keyboardType(.decimalPad)
-                            .textFieldStyle(.roundedBorder)
-                        
-                        DatePicker(
-                            "Start Date",
-                            selection: $date,
-                            displayedComponents: [.date]
-                        )
-                        .datePickerStyle(.graphical)
-                        
-                        Button("Hinzufügen", action: {
-                            addRuns(runLength: Double(kilometerAmount.replacing(",", with: ".")) ?? 0, runMinutes: Double(minutesAmount.replacing(",", with: ".")) ?? 0, date: date)
-                            showRunSheet.toggle()
-                        }).buttonStyle(.bordered)
-                        
-                    }.padding()
-                    
-                }
+                AddRunView(
+                    kilometerAmount: $kilometerAmount,
+                    minutesAmount: $minutesAmount,
+                    date: $date,
+                    showRunSheet: $showRunSheet,
+                    runList: $runList)
             })
             .tabItem{
                 Image(systemName: "figure.run.square.stack")
                 Text("Alle Läufe")
             }
-            // HOME
+            // HOME - Übersicht
             Text("Überblick")
                 .tabItem {
                     Image(systemName: "medal")
@@ -80,11 +53,55 @@ struct ContentView: View {
                 }
         }
     }
+}
+
+struct AddRunView: View {
+    
+    @Binding var kilometerAmount: String
+    @Binding var minutesAmount: String
+    @Binding var date: Date
+    @Binding var showRunSheet: Bool
+    @Binding var runList: Array<Run>
+    
+    var body: some View {
+        ZStack{
+            HStack {
+                Text("Lauf hinzufügen")
+                    .font(.largeTitle)
+                    .fontWeight(.medium)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                
+                Button("Abbrechen", role: .cancel, action: {showRunSheet.toggle()}).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            }.padding()
+            VStack(alignment: .center) {
+                TextField("Anzahl der Kilometer", text: $kilometerAmount)
+                    .keyboardType(.decimalPad)
+                    .textFieldStyle(.roundedBorder)
+                
+                TextField("Anzahl der Minuten", text: $minutesAmount)
+                    .keyboardType(.decimalPad)
+                    .textFieldStyle(.roundedBorder)
+                
+                DatePicker(
+                    "Start Date",
+                    selection: $date,
+                    displayedComponents: [.date]
+                )
+                .datePickerStyle(.graphical)
+                
+                Button("Hinzufügen", action: {
+                    addRuns(runLength: Double(kilometerAmount.replacing(",", with: ".")) ?? 0, runMinutes: Double(minutesAmount.replacing(",", with: ".")) ?? 0, date: date)
+                    showRunSheet.toggle()
+                }).buttonStyle(.bordered)
+                
+            }.padding()
+            
+        }
+    }
     func addRuns(runLength: Double, runMinutes: Double, date: Date){
         runList.append(Run(runNumber: runList.count + 1, runLength: runLength, runMinutes: runMinutes, date: date))
     }
 }
-
 
 struct RunInsights: View {
     var run: Run
