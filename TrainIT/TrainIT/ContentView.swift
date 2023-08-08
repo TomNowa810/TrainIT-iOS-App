@@ -3,14 +3,10 @@ import SwiftUI
 struct ContentView: View {
     
     @State var showRunSheet: Bool = false
+    
     @State var runList = [
         Run(runNumber: 1 , runLength: 5.89, runMinutes: 46.33, date: Date.now)
     ]
-    
-    @State private var kilometerAmount: String = ""
-    @State private var minutesAmount: String = ""
-    
-    @State private var date = Date()
     
     var body: some View {
         TabView {
@@ -32,12 +28,7 @@ struct ContentView: View {
                     Image(systemName: "square.and.pencil")
                 }))
             }.sheet(isPresented: $showRunSheet, content: {
-                AddRunView(
-                    kilometerAmount: $kilometerAmount,
-                    minutesAmount: $minutesAmount,
-                    date: $date,
-                    showRunSheet: $showRunSheet,
-                    runList: $runList)
+                AddRunView(showRunSheet: $showRunSheet, runCollection: $runList)
             })
             .tabItem{
                 Image(systemName: "figure.run.square.stack")
@@ -57,11 +48,12 @@ struct ContentView: View {
 
 struct AddRunView: View {
     
-    @Binding var kilometerAmount: String
-    @Binding var minutesAmount: String
-    @Binding var date: Date
+    @State private var kilometerAmount: String = ""
+    @State private var minutesAmount: String = ""
+    @State private var date = Date()
+    
     @Binding var showRunSheet: Bool
-    @Binding var runList: Array<Run>
+    @Binding var runCollection: Array<Run>
     
     var body: some View {
         ZStack{
@@ -99,7 +91,7 @@ struct AddRunView: View {
         }
     }
     func addRuns(runLength: Double, runMinutes: Double, date: Date){
-        runList.append(Run(runNumber: runList.count + 1, runLength: runLength, runMinutes: runMinutes, date: date))
+        runCollection.append(Run(runNumber: runCollection.count + 1, runLength: runLength, runMinutes: runMinutes, date: date))
     }
 }
 
