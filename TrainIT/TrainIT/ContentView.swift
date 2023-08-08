@@ -4,8 +4,11 @@ struct ContentView: View {
     
     @State var showRunSheet: Bool = false
     
-    @State var runList = [
-        Run(runNumber: 1 , runLength: 5.89, runMinutes: 46.33, date: Date.now)
+    @State var runCollection = [
+        Run(runNumber: 1 , runLength: 5.89, runMinutes: 46.33, date: Date.now),
+        Run(runNumber: 2 , runLength: 5.89, runMinutes: 46.33, date: Date.now),
+        Run(runNumber: 3 , runLength: 5.89, runMinutes: 46.33, date: Date.now),
+        Run(runNumber: 4 , runLength: 5.89, runMinutes: 46.33, date: Date.now)
     ]
     
     var body: some View {
@@ -14,10 +17,15 @@ struct ContentView: View {
             // RUNS
             NavigationStack {
                 
-                List(runList) {
-                    run in
-                    NavigationLink(destination: RunInsights(run: run)){
-                        RunRow(run: run)
+                List {
+                    ForEach(runCollection) {
+                        run in
+                        NavigationLink(destination: RunInsights(run: run)){
+                            RunListElement(run: run)
+                        }
+                    }
+                    Section(header: Text("Geschätzter Nächster Lauf")) {
+                        RunPredictionElement(runCollection: $runCollection)
                     }
                 }
                 .navigationTitle("Alle Läufe")
@@ -28,7 +36,7 @@ struct ContentView: View {
                     Image(systemName: "square.and.pencil")
                 }))
             }.sheet(isPresented: $showRunSheet, content: {
-                AddRunView(showRunSheet: $showRunSheet, runCollection: $runList)
+                AddRunView(showRunSheet: $showRunSheet, runCollection: $runCollection)
             })
             .tabItem{
                 Image(systemName: "figure.run.square.stack")
@@ -118,7 +126,7 @@ extension DateFormatter {
     }()
 }
 
-struct RunRow: View {
+struct RunListElement: View {
     var run: Run
     
     var body: some View {
@@ -127,6 +135,38 @@ struct RunRow: View {
                 .resizable()
                 .frame(width: 25, height: 32)
                 .foregroundColor(.blue)
+            
+            
+            VStack(alignment: .leading) {
+                HStack {
+                    Text("Lauf " + run.runNumber.formatted())
+                        .font(Font.headline)
+                    
+                    Spacer()
+                    
+                    Text(DateFormatter.displayDate.string(from: run.date))
+                        .foregroundColor(.secondary)
+                        .font(.system(size: 13))
+                }
+                
+                HStack {
+                    Text(run.runLength.formatted() + " km")
+                    Text(run.runMinutes.formatted() + " min")
+                }.font(Font.subheadline)
+            }
+        }
+    }
+}
+
+struct RunPredictionElement: View {
+    @Binding var runCollection: Array<Run>
+    
+    var body: some View {
+        HStack {
+            Image(systemName: "figure.run")
+                .resizable()
+                .frame(width: 25, height: 32)
+                .foregroundColor(.green)
             
             
             VStack(alignment: .leading) {
