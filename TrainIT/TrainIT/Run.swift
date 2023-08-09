@@ -10,16 +10,22 @@ import Foundation
 class Run: Identifiable {
     
     var id: String
-    var runNumber: Int
-    var runLength: Double
-    var runMinutes: Double
+    var number: Int
+    var length: Double
+    var minutes: Int
+    var seconds: Int
     var date: Date
+    var minutesTotal: Double
+    var averageKmPerKm: Double
     
-    init(runNumber: Int, runLength: Double, runMinutes: Double, date: Date) {
+    init(number: Int, length: Double, minutes: Int, seconds: Int, date: Date) {
         self.id = UUID().uuidString
-        self.runNumber = runNumber
-        self.runLength = runLength
-        self.runMinutes = runMinutes
+        self.number = number
+        self.length = length
+        self.minutes = minutes
+        self.seconds = seconds
         self.date = date
+        self.minutesTotal = Double(self.minutes) + Double(self.seconds / 60)
+        self.averageKmPerKm = round((self.minutesTotal / self.length) * 100) / 100
     }
 }
