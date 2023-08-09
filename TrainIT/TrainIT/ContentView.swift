@@ -5,10 +5,10 @@ struct ContentView: View {
     @State var showRunSheet: Bool = false
     
     @State var runCollection = [
-        Run(runNumber: 1 , runLength: 5.89, runMinutes: 46.33, date: Date.now),
-        Run(runNumber: 2 , runLength: 5.89, runMinutes: 46.33, date: Date.now),
-        Run(runNumber: 3 , runLength: 5.89, runMinutes: 46.33, date: Date.now),
-        Run(runNumber: 4 , runLength: 5.89, runMinutes: 46.33, date: Date.now)
+        Run(number: 1 , length: 5.89, minutes: 46, seconds: 23, date: Date.now),
+        Run(number: 2 , length: 5.89, minutes: 46, seconds: 23, date: Date.now),
+        Run(number: 3 , length: 5.89, minutes: 46, seconds: 23, date: Date.now),
+        Run(number: 4 , length: 5.89, minutes: 46, seconds: 23, date: Date.now)
     ]
     
     var body: some View {
@@ -24,7 +24,7 @@ struct ContentView: View {
                             RunListElement(run: run)
                         }
                     }
-                    Section(header: Text("Geschätzter Nächster Lauf")) {
+                    Section(header: Text("Auswertung")) {
                         RunPredictionElement(runCollection: $runCollection)
                     }
                 }
@@ -40,7 +40,7 @@ struct ContentView: View {
             })
             .tabItem{
                 Image(systemName: "figure.run.square.stack")
-                Text("Alle Läufe")
+                Text("Alle Läufe (" + runCollection.count.formatted() + ")")
             }
             // HOME - Übersicht
             Text("Überblick")
@@ -90,7 +90,10 @@ struct AddRunView: View {
                 .datePickerStyle(.graphical)
                 
                 Button("Hinzufügen", action: {
-                    addRuns(runLength: Double(kilometerAmount.replacing(",", with: ".")) ?? 0, runMinutes: Double(minutesAmount.replacing(",", with: ".")) ?? 0, date: date)
+                    addRuns(length: Double(kilometerAmount.replacing(",", with: ".")) ?? 0,
+                            minutes: Int(minutesAmount) ?? 0,
+                            seconds: 20,
+                            date: date)
                     showRunSheet.toggle()
                 }).buttonStyle(.bordered)
                 
@@ -98,8 +101,8 @@ struct AddRunView: View {
             
         }
     }
-    func addRuns(runLength: Double, runMinutes: Double, date: Date){
-        runCollection.append(Run(runNumber: runCollection.count + 1, runLength: runLength, runMinutes: runMinutes, date: date))
+    func addRuns(length: Double, minutes: Int, seconds: Int, date: Date){
+        runCollection.append(Run(number: runCollection.count + 1, length: length, minutes: minutes, seconds: seconds, date: date))
     }
 }
 
@@ -108,12 +111,11 @@ struct RunInsights: View {
     
     var body: some View {
         VStack {
-            let calculatedMinutesPerKm = round((run.runMinutes / run.runLength) * 100) / 100
             Image(systemName: "figure.mixed.cardio")
                 .foregroundColor(.blue)
                 .frame(width: 50, height: 50)
             Text("Durchschnittlichen Minuten pro KM:")
-            Text(calculatedMinutesPerKm.formatted() + " Min")
+            Text(run.averageKmPerKm.formatted() + " Min")
         }
     }
 }
@@ -138,21 +140,36 @@ struct RunListElement: View {
             
             
             VStack(alignment: .leading) {
-                HStack {
-                    Text("Lauf " + run.runNumber.formatted())
+                HStack(alignment: .top) {
+                    Text("Lauf " + run.number.formatted())
                         .font(Font.headline)
                     
                     Spacer()
                     
                     Text(DateFormatter.displayDate.string(from: run.date))
                         .foregroundColor(.secondary)
-                        .font(.system(size: 13))
+                        .font(.system(size: 12))
                 }
                 
                 HStack {
-                    Text(run.runLength.formatted() + " km")
-                    Text(run.runMinutes.formatted() + " min")
-                }.font(Font.subheadline)
+                    HStack {
+                        Text(run.length.formatted() + " km")
+                        Text(run.minutes.formatted() + ":" + run.seconds.formatted())
+                    }.font(.system(size: 12))
+                    
+                    Spacer()
+                    
+                    HStack(alignment: .lastTextBaseline, spacing: 1) {
+                        
+                        Text(run.averageKmPerKm.formatted())
+                            .font(.system(size: 18))
+                        
+                        VStack {
+                            Text("Ø").font(.system(size: 7))
+                            Text("mins").font(.system(size: 5)).foregroundColor(.gray)
+                        }
+                    }
+                }
             }
         }
     }
@@ -161,31 +178,52 @@ struct RunListElement: View {
 struct RunPredictionElement: View {
     @Binding var runCollection: Array<Run>
     
+    var kmAvg: Double {
+        var sum: Double = 0
+        
+        for run in runCollection {
+            sum += run.length
+        }
+        return sum
+    }
+    
+    var minAvg: Double {
+        var sum: Double = 0
+        
+        for run in runCollection {
+            sum += run.minutesTotal
+        }
+        return sum
+    }
+    
+    var avgMinsPerKm: Double {
+        var sum: Double = 0
+        
+        for run in runCollection {
+            sum += run.averageKmPerKm
+        }
+        return sum
+    }
+    
+    
     var body: some View {
+        
         HStack {
-            Image(systemName: "figure.run")
+            Image(systemName: "bonjour")
                 .resizable()
-                .frame(width: 25, height: 32)
+                .frame(width: 25, height: 25)
                 .foregroundColor(.green)
-            
             
             VStack(alignment: .leading) {
                 HStack {
-                    Text("Lauf " + run.runNumber.formatted())
-                        .font(Font.headline)
-                    
-                    Spacer()
-                    
-                    Text(DateFormatter.displayDate.string(from: run.date))
-                        .foregroundColor(.secondary)
-                        .font(.system(size: 13))
+                    Text("Ø Km")
                 }
+
                 
                 HStack {
-                    Text(run.runLength.formatted() + " km")
-                    Text(run.runMinutes.formatted() + " min")
-                }.font(Font.subheadline)
-            }
+                    Text("Ø Min")
+                }
+            }.font(.system(size: 13))
         }
     }
 }
