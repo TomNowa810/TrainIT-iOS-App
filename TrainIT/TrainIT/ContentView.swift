@@ -6,9 +6,9 @@ struct ContentView: View {
     
     @State var runCollection = [
         Run(number: 1 , length: 5.89, minutes: 46, seconds: 23, date: Date.now),
-        Run(number: 2 , length: 5.89, minutes: 46, seconds: 23, date: Date.now),
-        Run(number: 3 , length: 5.89, minutes: 46, seconds: 23, date: Date.now),
-        Run(number: 4 , length: 5.89, minutes: 46, seconds: 23, date: Date.now)
+        Run(number: 2 , length: 4.02, minutes: 24, seconds: 23, date: Date.now),
+        Run(number: 3 , length: 5.35, minutes: 30, seconds: 23, date: Date.now),
+        Run(number: 4 , length: 6.59, minutes: 38, seconds: 23, date: Date.now)
     ]
     
     var body: some View {
@@ -138,38 +138,34 @@ struct RunListElement: View {
                 .frame(width: 25, height: 32)
                 .foregroundColor(.blue)
             
-            
             VStack(alignment: .leading) {
-                HStack(alignment: .top) {
                     Text("Lauf " + run.number.formatted())
-                        .font(Font.headline)
-                    
-                    Spacer()
-                    
-                    Text(DateFormatter.displayDate.string(from: run.date))
-                        .foregroundColor(.secondary)
-                        .font(.system(size: 12))
-                }
+                        .font(.system(size: 15))
+                        .italic()
+    
+                Text(DateFormatter.displayDate.string(from: run.date))
+                    .foregroundColor(.secondary)
+                     .font(.system(size: 10))
                 
-                HStack {
-                    HStack {
-                        Text(run.length.formatted() + " km")
-                        Text(run.minutes.formatted() + ":" + run.seconds.formatted())
-                    }.font(.system(size: 12))
-                    
-                    Spacer()
-                    
-                    HStack(alignment: .lastTextBaseline, spacing: 1) {
-                        
-                        Text(run.averageKmPerKm.formatted())
-                            .font(.system(size: 18))
-                        
-                        VStack {
-                            Text("Ø").font(.system(size: 7))
-                            Text("mins").font(.system(size: 5)).foregroundColor(.gray)
-                        }
-                    }
-                }
+            }
+            
+            Spacer().frame(width: 28.0)
+            
+            VStack {
+                Text(run.minutes.formatted() + ":" + run.seconds.formatted())
+                Text(run.length.formatted() + " km")
+            }.font(.system(size: 12))
+            
+            Spacer()
+            
+            HStack(alignment: .lastTextBaseline, spacing: 1) {
+                Text(run.averageKmPerKm.formatted())
+                    .font(.system(size: 18))
+            }
+            
+            VStack {
+                Text("Ø").font(.system(size: 12))
+                Text("mins").font(.system(size: 10)).foregroundColor(.gray)
             }
         }
     }
