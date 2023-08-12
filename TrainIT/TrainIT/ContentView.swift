@@ -6,14 +6,34 @@ struct ContentView: View {
     
     @State var runCollection = [
         Run(
-            number: 1 ,
-            length: 5.89,
-            minutes: 46,
-            seconds: 23,
+            number: 1,
+            length: 5.78,
+            minutes: 58,
+            seconds: 30,
             date: Date.now,
-            minutesTotal: 46.35,
-            averageKmPerKm: 7.86,
+            minutesTotal: 58.5,
+            averageKmPerKm: 10.03,
             improvement: ImprovementEnum.equal
+        ),
+        Run(
+            number: 2,
+            length: 5.78,
+            minutes: 57,
+            seconds: 30,
+            date: Date.now,
+            minutesTotal: 57.5,
+            averageKmPerKm: 9.83,
+            improvement: ImprovementEnum.improved
+        ),
+        Run(
+            number: 3,
+            length: 5.9,
+            minutes: 30,
+            seconds: 30,
+            date: Date.now,
+            minutesTotal: 30,
+            averageKmPerKm: 6,
+            improvement: ImprovementEnum.improved
         )
     ]
     
@@ -167,61 +187,77 @@ struct RunInsights: View {
 extension DateFormatter {
     static let displayDate: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "d MMMM YYYY"
+        formatter.dateFormat = "d.MM.YYYY"
         return formatter
     }()
 }
 
 struct RunListElement: View {
+    @ScaledMetric var space = 8
+    
     var run: Run
     
+    var widthSpacer: Double {
+        if(String(run.length).count == 3){
+            return 50
+        }
+        return 46
+    }
+    
     var body: some View {
-        HStack {
-            Image(systemName: "figure.run")
-                .resizable()
-                .frame(width: 25, height: 32)
-                .foregroundColor(.blue)
-            
-            VStack(alignment: .leading) {
-                Text("Lauf " + run.number.formatted())
-                    .font(.system(size: 15))
-                    .italic()
-                
-                Text(DateFormatter.displayDate.string(from: run.date))
-                    .foregroundColor(.secondary)
-                    .font(.system(size: 10))
-                
-            }
-            
-            Spacer().frame(width: 28.0)
-            
-            VStack {
-                Text(run.minutes.formatted() + ":" + run.seconds.formatted())
-                Text(run.length.formatted() + " km")
-            }.font(.system(size: 12))
-            
+        HStack(spacing: space) {
             Spacer()
+                .frame(width: 14.0)
+            
+            HStack {
+                Image(systemName: "figure.run")
+                    .resizable()
+                    .frame(width: 37.0, height: 46.0)
+                    .foregroundColor(.blue)
+            }
+               
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Lauf " + run.number.formatted())
+                        .font(.system(size: 21))
+                        .italic()
+                    
+                    Text(DateFormatter.displayDate.string(from: run.date))
+                        .foregroundColor(.secondary)
+                        .font(.system(size: 10))
+                    
+                }
+                
+                Spacer()
+                    .frame(width: widthSpacer)
+                
+                VStack(alignment: .center) {
+                    Text(run.minutes.formatted() + ":" + run.seconds.formatted())
+                    Text(run.length.formatted() + " km")
+                }.font(.system(size: 16))
+            }
             
             let(systemName, color, width, heigh) = arrowValues(run: run)
-            
-            Image(systemName: systemName)
-                .resizable()
-                .frame(width: width, height: heigh)
-                .foregroundColor(color)
-            
+
             Spacer()
-                .frame(width: 4.0)
+        
             
-            HStack(alignment: .lastTextBaseline, spacing: 1) {
+            HStack {
+                Image(systemName: systemName)
+                    .resizable()
+                    .frame(width: width, height: heigh)
+                    .foregroundColor(color)
                 Text(run.averageKmPerKm.formatted())
-                    .font(.system(size: 18))
+                    .font(.system(size: 23))
+                
+                VStack {
+                    Text("Ø").font(.system(size: 12))
+                    Text("km\\m").font(.system(size: 10)).foregroundColor(.gray)
+                }
             }
             
-            VStack {
-                Text("Ø").font(.system(size: 12))
-                Text("mins").font(.system(size: 10)).foregroundColor(.gray)
-            }
-        }
+
+        }.padding().frame(width: 400.0, height: 60.0)
     }
     func arrowValues(run: Run) -> (
         systemName: String,
@@ -233,10 +269,10 @@ struct RunListElement: View {
         switch run.improvement {
             
         case ImprovementEnum.improved :
-            return ("arrowshape.up", .green, 12, 15)
+            return ("arrow.up", .green, 12, 15)
             
         case ImprovementEnum.deteriorated:
-            return ("arrowshape.down", .red, 12, 15)
+            return ("arrow.down", .red, 12, 15)
             
         default:
             return ("equal.circle", .gray, 15, 15)
