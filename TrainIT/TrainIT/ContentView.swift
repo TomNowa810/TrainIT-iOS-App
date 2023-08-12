@@ -126,7 +126,18 @@ struct AddRunView: View {
             return ImprovementEnum.equal
         }
         
-        runCollection.append(Run(number: runCollection.count + 1, length: length, minutes: minutes, seconds: seconds, date: date, minutesTotal: minutesTotal, averageKmPerKm: currentAvg, improvement: improvementParam))
+        runCollection.append(
+            Run(
+                number: runCollection.count + 1,
+                length: length,
+                minutes: minutes,
+                seconds: seconds,
+                date: date,
+                minutesTotal: minutesTotal,
+                averageKmPerKm: currentAvg,
+                improvement: improvementParam
+            )
+        )
     }
     
     func calculateAvg(minutesTotal: Double, length: Double) -> Double {
