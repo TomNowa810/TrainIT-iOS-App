@@ -5,10 +5,16 @@ struct ContentView: View {
     @State var showRunSheet: Bool = false
     
     @State var runCollection = [
-        Run(number: 1 , length: 5.89, minutes: 46, seconds: 23, date: Date.now),
-        Run(number: 2 , length: 4.02, minutes: 24, seconds: 23, date: Date.now),
-        Run(number: 3 , length: 5.35, minutes: 30, seconds: 23, date: Date.now),
-        Run(number: 4 , length: 6.59, minutes: 38, seconds: 23, date: Date.now)
+        Run(
+            number: 1 ,
+            length: 5.89,
+            minutes: 46,
+            seconds: 23,
+            date: Date.now,
+            minutesTotal: 46.35,
+            averageKmPerKm: 7.86,
+            improvement: ImprovementEnum.equal
+        )
     ]
     
     var body: some View {
@@ -71,8 +77,12 @@ struct AddRunView: View {
                     .fontWeight(.medium)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 
-                Button("Abbrechen", role: .cancel, action: {showRunSheet.toggle()}).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                Button("Abbrechen",
+                       role: .cancel,
+                       action: {
+                    showRunSheet.toggle()}).frame(maxWidth: .infinity, maxHeight:.infinity , alignment:.topTrailing)
             }.padding()
+            
             VStack(alignment: .center) {
                 TextField("Anzahl der Kilometer", text: $kilometerAmount)
                     .keyboardType(.decimalPad)
@@ -102,9 +112,32 @@ struct AddRunView: View {
         }
     }
     func addRuns(length: Double, minutes: Int, seconds: Int, date: Date){
-        runCollection.append(Run(number: runCollection.count + 1, length: length, minutes: minutes, seconds: seconds, date: date))
+        let lastAvg = runCollection.last?.averageKmPerKm ?? 0
+        let minutesTotal = calculateMinutesTotal(minutes: minutes, seconds: seconds)
+        let currentAvg = calculateAvg(minutesTotal: minutesTotal, length: length)
+        
+        var improvementParam: ImprovementEnum {
+            if(currentAvg < lastAvg) {
+                return ImprovementEnum.improved
+            }
+            else if(currentAvg > lastAvg) {
+                return ImprovementEnum.deteriorated
+            }
+            return ImprovementEnum.equal
+        }
+        
+        runCollection.append(Run(number: runCollection.count + 1, length: length, minutes: minutes, seconds: seconds, date: date, minutesTotal: minutesTotal, averageKmPerKm: currentAvg, improvement: improvementParam))
+    }
+    
+    func calculateAvg(minutesTotal: Double, length: Double) -> Double {
+        return round((minutesTotal / length) * 100) / 100
+    }
+    
+    func calculateMinutesTotal(minutes: Int, seconds: Int) -> Double{
+        return Double(minutes) + Double(seconds / 60)
     }
 }
+
 
 struct RunInsights: View {
     var run: Run
@@ -139,13 +172,13 @@ struct RunListElement: View {
                 .foregroundColor(.blue)
             
             VStack(alignment: .leading) {
-                    Text("Lauf " + run.number.formatted())
-                        .font(.system(size: 15))
-                        .italic()
-    
+                Text("Lauf " + run.number.formatted())
+                    .font(.system(size: 15))
+                    .italic()
+                
                 Text(DateFormatter.displayDate.string(from: run.date))
                     .foregroundColor(.secondary)
-                     .font(.system(size: 10))
+                    .font(.system(size: 10))
                 
             }
             
@@ -158,6 +191,16 @@ struct RunListElement: View {
             
             Spacer()
             
+            let(systemName, color, width, heigh) = arrowValues(run: run)
+            
+            Image(systemName: systemName)
+                .resizable()
+                .frame(width: width, height: heigh)
+                .foregroundColor(color)
+            
+            Spacer()
+                .frame(width: 4.0)
+            
             HStack(alignment: .lastTextBaseline, spacing: 1) {
                 Text(run.averageKmPerKm.formatted())
                     .font(.system(size: 18))
@@ -167,6 +210,25 @@ struct RunListElement: View {
                 Text("Ø").font(.system(size: 12))
                 Text("mins").font(.system(size: 10)).foregroundColor(.gray)
             }
+        }
+    }
+    func arrowValues(run: Run) -> (
+        systemName: String,
+        color: Color,
+        width: Double,
+        height: Double
+    ){
+        
+        switch run.improvement {
+            
+        case ImprovementEnum.improved :
+            return ("arrowshape.up", .green, 12, 15)
+            
+        case ImprovementEnum.deteriorated:
+            return ("arrowshape.down", .red, 12, 15)
+            
+        default:
+            return ("equal.circle", .gray, 15, 15)
         }
     }
 }

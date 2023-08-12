@@ -7,6 +7,13 @@
 
 import Foundation
 
+
+enum ImprovementEnum {
+    case improved
+    case equal
+    case deteriorated
+}
+
 class Run: Identifiable {
     
     var id: String
@@ -17,15 +24,19 @@ class Run: Identifiable {
     var date: Date
     var minutesTotal: Double
     var averageKmPerKm: Double
+    var improvement: ImprovementEnum
     
-    init(number: Int, length: Double, minutes: Int, seconds: Int, date: Date) {
+    init(number: Int, length: Double, minutes: Int, seconds: Int, date: Date, minutesTotal: Double, averageKmPerKm: Double, improvement: ImprovementEnum) {
         self.id = UUID().uuidString
         self.number = number
         self.length = length
         self.minutes = minutes
         self.seconds = seconds
         self.date = date
-        self.minutesTotal = Double(self.minutes) + Double(self.seconds / 60)
-        self.averageKmPerKm = round((self.minutesTotal / self.length) * 100) / 100
+        self.minutesTotal = minutesTotal
+        self.averageKmPerKm = averageKmPerKm
+        self.improvement = improvement
     }
 }
+
+
