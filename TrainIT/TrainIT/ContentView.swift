@@ -27,13 +27,13 @@ struct ContentView: View {
         ),
         Run(
             number: 3,
-            length: 5.9,
-            minutes: 30,
-            seconds: 30,
+            length: 5.78,
+            minutes: 57,
+            seconds: 53,
             date: Date.now,
-            minutesTotal: 30,
-            averageKmPerKm: 6,
-            improvement: ImprovementEnum.improved
+            minutesTotal: 57.5,
+            averageKmPerKm: 9.89,
+            improvement: ImprovementEnum.deteriorated
         )
     ]
     
@@ -289,7 +289,7 @@ struct RunPredictionElement: View {
         for run in runCollection {
             sum += run.length
         }
-        return sum
+        return roundOnTwoDecimalPlaces(value: sum)
     }
     
     var minAvg: Double {
@@ -298,40 +298,80 @@ struct RunPredictionElement: View {
         for run in runCollection {
             sum += run.minutesTotal
         }
-        return sum
+        return roundOnTwoDecimalPlaces(value: sum)
     }
-    
     var avgMinsPerKm: Double {
         var sum: Double = 0
         
         for run in runCollection {
             sum += run.averageKmPerKm
         }
-        return sum
+        return roundOnTwoDecimalPlaces(value: sum)
     }
     
+    func roundOnTwoDecimalPlaces(value: Double) -> Double {
+        return  round((value / Double(runCollection.count)) * 100) / 100
+    }
     
     var body: some View {
         
         HStack {
-            Image(systemName: "bonjour")
-                .resizable()
-                .frame(width: 25, height: 25)
-                .foregroundColor(.green)
-            
-            VStack(alignment: .leading) {
-                HStack {
-                    Text("Ø Km")
-                }
-
+            VStack {
                 
-                HStack {
-                    Text("Ø Min")
+                Spacer().frame(width: 10)
+                
+                VStack {
+                    
+                    RoadSymbol()
+                    
+                    HStack {
+                        Text(kmAvg.formatted())
+                            .font(.system(size: 20))
+                        
+                        VStack{
+                            Text("Ø")
+                                .font(.system(size: 12))
+                            Text("km's")
+                                .font(.system(size: 10))
+                                .foregroundColor(.gray)
+                        }
+                    }
                 }
-            }.font(.system(size: 13))
-        }
+                Spacer()
+            }
+        }.padding().frame(width: 400.0, height: 70.0)
     }
 }
+
+struct RoadSymbol: View {
+    
+    var body: some View {
+        Circle()
+            .fill(
+                LinearGradient(
+                    colors: [Color(.green)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing)
+            )
+            .frame(width: 30, height: 30)
+            .overlay(
+                Image(systemName: "road.lanes")
+                    .resizable()
+                    .frame(width: 22, height: 20)
+                    .foregroundColor(.white)
+            )
+            .overlay(
+                Circle()
+                    .fill(Color.white)
+                    .frame(width: 13, height: 13)
+                    .overlay(
+                        Text("Ø")
+                            .font(.system(size: 10))
+                    )
+                , alignment: .bottomTrailing)
+    }
+}
+
 
 // Vorschau
 struct ContentView_Previews: PreviewProvider {
