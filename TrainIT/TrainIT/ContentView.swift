@@ -322,7 +322,7 @@ struct RunPredictionElement: View {
                 
                 VStack {
                     
-                    RoadSymbol()
+                    RoadSymbol(isArrow: false, content: "Ø")
                     
                     HStack {
                         Text(kmAvg.formatted())
@@ -338,6 +338,48 @@ struct RunPredictionElement: View {
                     }
                 }
                 Spacer()
+                
+
+            }
+            
+            Spacer()
+            
+            VStack {
+                
+                RoadSymbol(isArrow: true, content: "arrow.up")
+                
+                HStack {
+                    Text(kmAvg.formatted())
+                        .font(.system(size: 20))
+                    
+                    VStack{
+                        Text("Ø")
+                            .font(.system(size: 12))
+                        Text("km's")
+                            .font(.system(size: 10))
+                            .foregroundColor(.gray)
+                    }
+                }
+            }
+            
+            Spacer()
+            
+            VStack {
+                
+                RoadSymbol(isArrow: true, content: "arrow.down")
+                
+                HStack {
+                    Text(kmAvg.formatted())
+                        .font(.system(size: 20))
+                    
+                    VStack{
+                        Text("Ø")
+                            .font(.system(size: 12))
+                        Text("km's")
+                            .font(.system(size: 10))
+                            .foregroundColor(.gray)
+                    }
+                }
             }
         }.padding().frame(width: 400.0, height: 70.0)
     }
@@ -345,30 +387,58 @@ struct RunPredictionElement: View {
 
 struct RoadSymbol: View {
     
+    var isArrow: Bool
+    var content: String
+    
     var body: some View {
-        Circle()
-            .fill(
-                LinearGradient(
-                    colors: [Color(.green)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing)
-            )
-            .frame(width: 30, height: 30)
-            .overlay(
-                Image(systemName: "road.lanes")
-                    .resizable()
-                    .frame(width: 22, height: 20)
-                    .foregroundColor(.white)
-            )
-            .overlay(
-                Circle()
-                    .fill(Color.white)
-                    .frame(width: 13, height: 13)
-                    .overlay(
-                        Text("Ø")
-                            .font(.system(size: 10))
-                    )
-                , alignment: .bottomTrailing)
+        if(!isArrow) {
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: [Color(.gray)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing)
+                )
+                .frame(width: 30, height: 30)
+                .overlay(
+                    Image(systemName: "road.lanes")
+                        .resizable()
+                        .frame(width: 22, height: 20)
+                        .foregroundColor(.white)
+                )
+                .overlay(
+                    Circle()
+                        .fill(Color.white)
+                        .frame(width: 13, height: 13)
+                        .overlay(
+                            Text(content)
+                                .font(.system(size: 10))
+                        )
+                    , alignment: .bottomTrailing)
+        } else {
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: [Color(.gray)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing)
+                )
+                .frame(width: 30, height: 30)
+                .overlay(
+                    Image(systemName: "road.lanes")
+                        .resizable()
+                        .frame(width: 22, height: 20)
+                        .foregroundColor(.white)
+                )
+                .overlay(
+                    Circle()
+                        .fill(Color.white)
+                        .frame(width: 13, height: 13)
+                        .overlay(
+                            Image(systemName: content).resizable().frame(width: 6, height: 8).foregroundColor(.black)
+                        )
+                    , alignment: .bottomTrailing)
+        }
     }
 }
 
