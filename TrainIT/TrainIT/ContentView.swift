@@ -32,7 +32,7 @@ struct ContentView: View {
             seconds: 30,
             date: Date.now,
             minutesTotal: 36.5,
-            averageKmPerKm: 6.6,
+            averageKmPerKm: 6.60,
             improvement: ImprovementEnum.deteriorated
         )
     ]
@@ -204,6 +204,21 @@ struct RunListElement: View {
         return 46
     }
     
+    
+    var formattedAvg: String {
+        var secondsTotal = Int(run.averageKmPerKm * 60);
+        let minutes = (secondsTotal % 3600) / 60
+        let seconds = secondsTotal % 60
+        
+        var secondsString = String(seconds)
+        
+        if(secondsString.count == 1){
+            secondsString = "0" + secondsString
+        }
+        
+        return String(minutes) + ":" + secondsString
+    }
+    
     var body: some View {
         HStack(spacing: space) {
             Spacer()
@@ -247,9 +262,10 @@ struct RunListElement: View {
                     .resizable()
                     .frame(width: width, height: heigh)
                     .foregroundColor(color)
-                Text(run.averageKmPerKm.formatted())
+                Text(formattedAvg)
                     .font(.system(size: 23))
                 
+            
                 VStack {
                     Text("Ø").font(.system(size: 12))
                     Text("km\\m").font(.system(size: 10)).foregroundColor(.gray)
