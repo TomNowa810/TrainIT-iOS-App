@@ -7,32 +7,32 @@ struct ContentView: View {
     @State var runCollection = [
         Run(
             number: 1,
-            length: 5.78,
-            minutes: 58,
-            seconds: 30,
+            length: 5.08,
+            minutes: 32,
+            seconds: 37,
             date: Date.now,
-            minutesTotal: 58.5,
-            averageKmPerKm: 10.03,
+            minutesTotal: 32.62,
+            averageKmPerKm: 6.61,
             improvement: ImprovementEnum.equal
         ),
         Run(
             number: 2,
-            length: 5.78,
-            minutes: 57,
-            seconds: 30,
+            length: 4.91,
+            minutes: 28,
+            seconds: 42,
             date: Date.now,
-            minutesTotal: 57.5,
-            averageKmPerKm: 9.83,
+            minutesTotal: 28.73,
+            averageKmPerKm: 5.83,
             improvement: ImprovementEnum.improved
         ),
         Run(
             number: 3,
-            length: 5.78,
-            minutes: 57,
-            seconds: 53,
+            length: 5.53,
+            minutes: 36,
+            seconds: 30,
             date: Date.now,
-            minutesTotal: 57.5,
-            averageKmPerKm: 9.89,
+            minutesTotal: 36.5,
+            averageKmPerKm: 6.6,
             improvement: ImprovementEnum.deteriorated
         )
     ]
@@ -289,7 +289,29 @@ struct RunPredictionElement: View {
         for run in runCollection {
             sum += run.length
         }
-        return roundOnTwoDecimalPlaces(value: sum)
+        return roundAndDeviceByRunElements(value: sum)
+    }
+    
+    var kmMax: Double {
+        var max: Double = 0
+        
+        for run in runCollection {
+            if(max < run.length) {
+                max = run.length
+            }
+        }
+        return roundOnTwoDecimalPlaces(value: max)
+    }
+    
+    var kmMin: Double {
+        var min: Double = runCollection.first?.length ?? 10.0
+        
+        for run in runCollection {
+            if(min > run.length) {
+                min = run.length
+            }
+        }
+        return roundOnTwoDecimalPlaces(value: min)
     }
     
     var minAvg: Double {
@@ -298,7 +320,7 @@ struct RunPredictionElement: View {
         for run in runCollection {
             sum += run.minutesTotal
         }
-        return roundOnTwoDecimalPlaces(value: sum)
+        return roundAndDeviceByRunElements(value: sum)
     }
     var avgMinsPerKm: Double {
         var sum: Double = 0
@@ -306,11 +328,15 @@ struct RunPredictionElement: View {
         for run in runCollection {
             sum += run.averageKmPerKm
         }
-        return roundOnTwoDecimalPlaces(value: sum)
+        return roundAndDeviceByRunElements(value: sum)
+    }
+    
+    func roundAndDeviceByRunElements(value: Double) -> Double {
+        return roundOnTwoDecimalPlaces(value: (value / Double(runCollection.count)))
     }
     
     func roundOnTwoDecimalPlaces(value: Double) -> Double {
-        return  round((value / Double(runCollection.count)) * 100) / 100
+        return  round(value * 100) / 100
     }
     
     var body: some View {
@@ -322,15 +348,19 @@ struct RunPredictionElement: View {
                 
                 VStack {
                     
-                    RoadSymbol(isArrow: false, content: "Ø")
+                    RoadSymbol(
+                        isArrow: false,
+                        color: .gray,
+                        content: "Ø"
+                    )
                     
                     HStack {
                         Text(kmAvg.formatted())
                             .font(.system(size: 20))
                         
                         VStack{
-                            Text("Ø")
-                                .font(.system(size: 12))
+                            Spacer()
+                            
                             Text("km's")
                                 .font(.system(size: 10))
                                 .foregroundColor(.gray)
@@ -346,15 +376,18 @@ struct RunPredictionElement: View {
             
             VStack {
                 
-                RoadSymbol(isArrow: true, content: "arrow.up")
+                RoadSymbol(
+                    isArrow: true,
+                    color: .green,
+                    content: "arrow.up"
+                )
                 
                 HStack {
-                    Text(kmAvg.formatted())
+                    Text(kmMax.formatted())
                         .font(.system(size: 20))
                     
                     VStack{
-                        Text("Ø")
-                            .font(.system(size: 12))
+                        Spacer()
                         Text("km's")
                             .font(.system(size: 10))
                             .foregroundColor(.gray)
@@ -366,15 +399,19 @@ struct RunPredictionElement: View {
             
             VStack {
                 
-                RoadSymbol(isArrow: true, content: "arrow.down")
+                RoadSymbol(
+                    isArrow: true,
+                    color: .red,
+                    content: "arrow.down"
+                )
                 
                 HStack {
-                    Text(kmAvg.formatted())
+                    Text(kmMin.formatted())
                         .font(.system(size: 20))
                     
                     VStack{
-                        Text("Ø")
-                            .font(.system(size: 12))
+                        Spacer()
+                        
                         Text("km's")
                             .font(.system(size: 10))
                             .foregroundColor(.gray)
@@ -388,6 +425,7 @@ struct RunPredictionElement: View {
 struct RoadSymbol: View {
     
     var isArrow: Bool
+    var color: Color
     var content: String
     
     var body: some View {
@@ -435,7 +473,10 @@ struct RoadSymbol: View {
                         .fill(Color.white)
                         .frame(width: 13, height: 13)
                         .overlay(
-                            Image(systemName: content).resizable().frame(width: 6, height: 8).foregroundColor(.black)
+                            Image(systemName: content)
+                                .resizable()
+                                .frame(width: 6, height: 8)
+                                .foregroundColor(color)
                         )
                     , alignment: .bottomTrailing)
         }
