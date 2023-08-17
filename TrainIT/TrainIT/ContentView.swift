@@ -358,83 +358,75 @@ struct RunPredictionElement: View {
     var body: some View {
         
         HStack {
-            VStack {
-                
-                Spacer().frame(width: 10)
-                
-                VStack {
-                    
-                    RoadSymbol(
-                        isArrow: false,
-                        color: .gray,
-                        content: "Ø"
-                    )
-                    
-                    HStack {
-                        Text(kmAvg.formatted())
-                            .font(.system(size: 20))
-                        
-                        VStack{
-                            Spacer()
-                            
-                            Text("km's")
-                                .font(.system(size: 10))
-                                .foregroundColor(.gray)
-                        }
-                    }
-                }
-                Spacer()
-                
-
-            }
             
             Spacer()
             
-            VStack {
-                
-                RoadSymbol(
+            LengthView(
+                roadSymol: RoadSymbol(
+                    isArrow: false,
+                    color: .gray,
+                    content: "Ø"
+                ),
+                value: kmAvg.formatted()
+            )
+            
+            Spacer()
+            
+            LengthView(
+                roadSymol: RoadSymbol(
                     isArrow: true,
                     color: .green,
                     content: "arrow.up"
-                )
-                
-                HStack {
-                    Text(kmMax.formatted())
-                        .font(.system(size: 20))
-                    
-                    VStack{
-                        Spacer()
-                        Text("km's")
-                            .font(.system(size: 10))
-                            .foregroundColor(.gray)
-                    }
-                }
-            }
+                ),
+                value: kmMax.formatted()
+            )
+            
             
             Spacer()
             
-            VStack {
-                
-                RoadSymbol(
+            LengthView(
+                roadSymol: RoadSymbol(
                     isArrow: true,
                     color: .red,
                     content: "arrow.down"
-                )
+                ),
+                value: kmMin.formatted()
+            )
+            
+            Spacer()
+            
+        }.padding().frame(width: 400.0, height: 70.0)
+    }
+}
+
+struct LengthView: View {
+    
+    let roadSymol: RoadSymbol
+    
+    let value: String
+    
+    var body: some View {
+        VStack {
+            HStack{
+                roadSymol
+            }
+            
+            HStack{
                 
-                HStack {
-                    Text(kmMin.formatted())
-                        .font(.system(size: 20))
-                    
-                    VStack{
-                        Spacer()
-                        
-                        Text("km's")
-                            .font(.system(size: 10))
-                            .foregroundColor(.gray)
-                    }
+                Text(value)
+                    .font(.system(size: 20))
+                
+                Spacer()
+                    .frame(width: 4.0)
+                
+                VStack{
+                    Spacer()
+                    Text("km's")
+                        .font(.system(size: 9))
+                        .foregroundColor(.gray)
                 }
             }
-        }.padding().frame(width: 400.0, height: 70.0)
+        }
     }
 }
 
