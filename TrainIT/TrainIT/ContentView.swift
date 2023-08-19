@@ -475,7 +475,7 @@ struct CalculationView: View {
                         Button(action: {
                             scrollViewProxy.scrollTo(1)
                         }, label: {
-                            Image(systemName: "arrow.turn.up.left")
+                            Image(systemName: "return")
                                 .resizable()
                                 .frame(width: 13, height: 10)
                                 .foregroundColor(.gray)
@@ -536,7 +536,7 @@ struct CalculationView: View {
                     }
                 }
             }
-        }.padding().frame(width: 350.0, height: 110.0)
+        }.padding().frame(width: 350.0, height: 130.0)
     }
 }
 
