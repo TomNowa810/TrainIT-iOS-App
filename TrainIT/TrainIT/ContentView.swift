@@ -39,7 +39,6 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            
             // RUNS
             NavigationStack {
                 
@@ -206,7 +205,7 @@ struct RunListElement: View {
     
     
     var formattedAvg: String {
-        var secondsTotal = Int(run.averageMinPerKm * 60);
+        let secondsTotal = Int(run.averageMinPerKm * 60);
         let minutes = (secondsTotal % 3600) / 60
         let seconds = secondsTotal % 60
         
@@ -230,7 +229,7 @@ struct RunListElement: View {
                     .frame(width: 37.0, height: 46.0)
                     .foregroundColor(.blue)
             }
-               
+            
             HStack {
                 VStack(alignment: .leading) {
                     Text("Lauf " + run.number.formatted())
@@ -253,9 +252,9 @@ struct RunListElement: View {
             }
             
             let(systemName, color, width, heigh) = arrowValues(run: run)
-
+            
             Spacer()
-        
+            
             
             HStack {
                 Image(systemName: systemName)
@@ -265,14 +264,14 @@ struct RunListElement: View {
                 Text(formattedAvg)
                     .font(.system(size: 23))
                 
-            
+                
                 VStack {
                     Text("Ø").font(.system(size: 12))
                     Text("km\\m").font(.system(size: 10)).foregroundColor(.gray)
                 }
             }
             
-
+            
         }.padding().frame(width: 400.0, height: 60.0)
     }
     func arrowValues(run: Run) -> (
@@ -331,13 +330,27 @@ struct RunPredictionElement: View {
     }
     
     var minAvg: Double {
-        var sum: Double = 0
+        var min: Double = runCollection.first?.averageMinPerKm ?? 10.0
         
         for run in runCollection {
-            sum += run.minutesTotal
+            if(min > run.averageMinPerKm) {
+                min = run.averageMinPerKm
+            }
         }
-        return roundAndDeviceByRunElements(value: sum)
+        return roundOnTwoDecimalPlaces(value: min)
     }
+    
+    var maxAvg: Double {
+        var max: Double = 0
+        
+        for run in runCollection {
+            if(max < run.averageMinPerKm) {
+                max = run.averageMinPerKm
+            }
+        }
+        return roundOnTwoDecimalPlaces(value: max)
+    }
+    
     var avgMinsPerKm: Double {
         var sum: Double = 0
         
@@ -357,80 +370,181 @@ struct RunPredictionElement: View {
     
     var body: some View {
         
-        HStack {
+        
+        ScrollView(.horizontal, showsIndicators: true) {
             
-            Spacer()
-            
-            LengthView(
-                roadSymol: RoadSymbol(
-                    isArrow: false,
-                    color: .gray,
-                    content: "Ø"
-                ),
-                value: kmAvg.formatted()
-            )
-            
-            Spacer()
-            
-            LengthView(
-                roadSymol: RoadSymbol(
-                    isArrow: true,
-                    color: .green,
-                    content: "arrow.up"
-                ),
-                value: kmMax.formatted()
-            )
-            
-            
-            Spacer()
-            
-            LengthView(
-                roadSymol: RoadSymbol(
-                    isArrow: true,
-                    color: .red,
-                    content: "arrow.down"
-                ),
-                value: kmMin.formatted()
-            )
-            
-            Spacer()
-            
-        }.padding().frame(width: 400.0, height: 70.0)
-    }
-}
-
-struct LengthView: View {
-    
-    let roadSymol: RoadSymbol
-    
-    let value: String
-    
-    var body: some View {
-        VStack {
-            HStack{
-                roadSymol
-            }
-            
-            HStack{
+            HStack(spacing: 100) {
                 
-                Text(value)
-                    .font(.system(size: 20))
+                CalculationView(
+                    headline: "Distanz - Werte",
+                    isFirstView: true,
+                    firstSymbol:
+                        CalculationSymbol(
+                            imageName: "road.lanes",
+                            imageWidth: 22,
+                            imageHeight: 20,
+                            isArrow: false,
+                            color: .gray,
+                            content: "Ø")
+                    ,
+                    firstValue: self.kmAvg.formatted()
+                    , secondSymbol: CalculationSymbol(
+                        imageName: "road.lanes",
+                        imageWidth: 22,
+                        imageHeight: 20,
+                        isArrow: true,
+                        color: .green,
+                        content: "arrow.up"
+                    ),
+                    secondValue: self.kmMax.formatted(),
+                    thirdSymbol: CalculationSymbol(
+                        imageName: "road.lanes",
+                        imageWidth: 22,
+                        imageHeight: 20,
+                        isArrow: true,
+                        color: .red,
+                        content: "arrow.down"
+                    ),
+                    thirdValue: self.kmMin.formatted()
+                )
                 
-                Spacer()
-                    .frame(width: 4.0)
-                
-                VStack{
-                    Spacer()
-                    Text("km's")
-                        .font(.system(size: 9))
-                        .foregroundColor(.gray)
-                }
+                CalculationView(
+                    headline: "Zeit - Werte",
+                    isFirstView: false,
+                    firstSymbol:
+                        CalculationSymbol(
+                            imageName: "clock.arrow.2.circlepath",
+                            imageWidth: 24,
+                            imageHeight: 20,
+                            isArrow: false,
+                            color: .gray,
+                            content: "Ø")
+                    ,
+                    firstValue: convertMinutesToStringForView(mins: self.avgMinsPerKm)
+                    , secondSymbol: CalculationSymbol(
+                        imageName: "clock.arrow.2.circlepath",
+                        imageWidth: 24,
+                        imageHeight: 20,
+                        isArrow: true,
+                        color: .green,
+                        content: "arrow.up"
+                    ),
+                    secondValue: convertMinutesToStringForView(mins: self.minAvg),
+                    thirdSymbol: CalculationSymbol(
+                        imageName: "clock.arrow.2.circlepath",
+                        imageWidth: 24,
+                        imageHeight: 20,
+                        isArrow: true,
+                        color: .red,
+                        content: "arrow.down"
+                    ),
+                    thirdValue: convertMinutesToStringForView(mins: self.maxAvg)
+                )
             }
         }
     }
 }
 
-struct RoadSymbol: View {
+struct CalculationView: View {
+    
+    let headline: String
+    let isFirstView: Bool
+    
+    let firstSymbol: CalculationSymbol
+    let firstValue: String
+    
+    let secondSymbol: CalculationSymbol
+    let secondValue: String
+    
+    let thirdSymbol: CalculationSymbol
+    let thirdValue: String
+    
+    
+    var body: some View {
+        HStack {
+            VStack {
+                HStack {
+                    Spacer()
+                    
+                    Text(headline)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    Spacer()
+                    
+                    if(isFirstView) {
+                        Image(systemName: "arrowshape.zigzag.forward")
+                            .resizable()
+                            .frame(width: 15, height: 10)
+                            .foregroundColor(.gray)
+                    }
+                }
+                
+                Divider().frame(width: 150.0)
+                
+                Spacer()
+                    .frame(height: 20.0)
+                
+                HStack {
+                    
+                    VStack {
+                        HStack{
+                            firstSymbol
+                        }
+                        RoadValueTypeDescriptionView(value: firstValue)
+                    }
+                    
+                    Spacer()
+                    
+                    VStack {
+                        HStack{
+                            secondSymbol
+                        }
+                        RoadValueTypeDescriptionView(value: secondValue)
+                    }
+                    
+                    Spacer()
+                    
+                    VStack {
+                        HStack{
+                            thirdSymbol
+                        }
+                        RoadValueTypeDescriptionView(value: thirdValue)
+                    }
+                }
+            }
+        }.padding().frame(width: 350.0, height: 110.0)
+    }
+}
+
+struct RoadValueTypeDescriptionView: View {
+    
+    let value: String
+    
+    var body: some View {
+        HStack{
+            
+            Text(value)
+                .font(.system(size: 20))
+            
+            Spacer()
+                .frame(width: 4.0)
+            
+            VStack{
+                Spacer()
+                Text("km's")
+                    .font(.system(size: 9))
+                    .foregroundColor(.gray)
+            }
+        }
+    }
+}
+
+struct CalculationSymbol: View {
+    
+    var imageName: String
+    var imageWidth: CGFloat
+    var imageHeight: CGFloat
     
     var isArrow: Bool
     var color: Color
@@ -447,9 +561,9 @@ struct RoadSymbol: View {
                 )
                 .frame(width: 30, height: 30)
                 .overlay(
-                    Image(systemName: "road.lanes")
+                    Image(systemName: imageName)
                         .resizable()
-                        .frame(width: 22, height: 20)
+                        .frame(width: imageWidth, height: imageHeight)
                         .foregroundColor(.white)
                 )
                 .overlay(
@@ -471,9 +585,9 @@ struct RoadSymbol: View {
                 )
                 .frame(width: 30, height: 30)
                 .overlay(
-                    Image(systemName: "road.lanes")
+                    Image(systemName: imageName)
                         .resizable()
-                        .frame(width: 22, height: 20)
+                        .frame(width: imageWidth, height: imageHeight)
                         .foregroundColor(.white)
                 )
                 .overlay(
