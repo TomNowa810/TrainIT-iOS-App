@@ -23,7 +23,7 @@ class Run: Identifiable {
     var seconds: Int
     var date: Date
     var minutesTotal: Double
-    var averageKmPerKm: Double
+    var averageMinPerKm: Double
     var improvement: ImprovementEnum
     
     init(number: Int, length: Double, minutes: Int, seconds: Int, date: Date, minutesTotal: Double, averageKmPerKm: Double, improvement: ImprovementEnum) {
@@ -34,7 +34,7 @@ class Run: Identifiable {
         self.seconds = seconds
         self.date = date
         self.minutesTotal = minutesTotal
-        self.averageKmPerKm = averageKmPerKm
+        self.averageMinPerKm = averageKmPerKm
         self.improvement = improvement
     }
 }

@@ -132,7 +132,7 @@ struct AddRunView: View {
         }
     }
     func addRuns(length: Double, minutes: Int, seconds: Int, date: Date){
-        let lastAvg = runCollection.last?.averageKmPerKm ?? 0
+        let lastAvg = runCollection.last?.averageMinPerKm ?? 0
         let minutesTotal = calculateMinutesTotal(minutes: minutes, seconds: seconds)
         let currentAvg = calculateAvg(minutesTotal: minutesTotal, length: length)
         
@@ -179,7 +179,7 @@ struct RunInsights: View {
                 .foregroundColor(.blue)
                 .frame(width: 50, height: 50)
             Text("Durchschnittlichen Minuten pro KM:")
-            Text(run.averageKmPerKm.formatted() + " Min")
+            Text(run.averageMinPerKm.formatted() + " Min")
         }
     }
 }
@@ -206,7 +206,7 @@ struct RunListElement: View {
     
     
     var formattedAvg: String {
-        var secondsTotal = Int(run.averageKmPerKm * 60);
+        var secondsTotal = Int(run.averageMinPerKm * 60);
         let minutes = (secondsTotal % 3600) / 60
         let seconds = secondsTotal % 60
         
@@ -342,7 +342,7 @@ struct RunPredictionElement: View {
         var sum: Double = 0
         
         for run in runCollection {
-            sum += run.averageKmPerKm
+            sum += run.averageMinPerKm
         }
         return roundAndDeviceByRunElements(value: sum)
     }
