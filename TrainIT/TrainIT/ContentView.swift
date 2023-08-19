@@ -372,74 +372,79 @@ struct RunPredictionElement: View {
         
         
         ScrollView(.horizontal, showsIndicators: true) {
-            
-            HStack(spacing: 100) {
+            ScrollViewReader {
+                value in
                 
-                CalculationView(
-                    headline: "Distanz - Werte",
-                    isFirstView: true,
-                    firstSymbol:
-                        CalculationSymbol(
+                HStack(spacing: 100) {
+                    
+                    CalculationView(
+                        headline: "Distanz - Werte",
+                        isFirstView: true,
+                        firstSymbol:
+                            CalculationSymbol(
+                                imageName: "road.lanes",
+                                imageWidth: 22,
+                                imageHeight: 20,
+                                isArrow: false,
+                                color: .gray,
+                                content: "Ø")
+                        ,
+                        firstValue: self.kmAvg.formatted()
+                        , secondSymbol: CalculationSymbol(
                             imageName: "road.lanes",
                             imageWidth: 22,
                             imageHeight: 20,
-                            isArrow: false,
-                            color: .gray,
-                            content: "Ø")
-                    ,
-                    firstValue: self.kmAvg.formatted()
-                    , secondSymbol: CalculationSymbol(
-                        imageName: "road.lanes",
-                        imageWidth: 22,
-                        imageHeight: 20,
-                        isArrow: true,
-                        color: .green,
-                        content: "arrow.up"
-                    ),
-                    secondValue: self.kmMax.formatted(),
-                    thirdSymbol: CalculationSymbol(
-                        imageName: "road.lanes",
-                        imageWidth: 22,
-                        imageHeight: 20,
-                        isArrow: true,
-                        color: .red,
-                        content: "arrow.down"
-                    ),
-                    thirdValue: self.kmMin.formatted()
-                )
-                
-                CalculationView(
-                    headline: "Zeit - Werte",
-                    isFirstView: false,
-                    firstSymbol:
-                        CalculationSymbol(
+                            isArrow: true,
+                            color: .green,
+                            content: "arrow.up"
+                        ),
+                        secondValue: self.kmMax.formatted(),
+                        thirdSymbol: CalculationSymbol(
+                            imageName: "road.lanes",
+                            imageWidth: 22,
+                            imageHeight: 20,
+                            isArrow: true,
+                            color: .red,
+                            content: "arrow.down"
+                        ),
+                        thirdValue: self.kmMin.formatted(),
+                        scrollViewProxy: value
+                    ).id(1)
+                    
+                    CalculationView(
+                        headline: "Zeit - Werte",
+                        isFirstView: false,
+                        firstSymbol:
+                            CalculationSymbol(
+                                imageName: "clock.arrow.2.circlepath",
+                                imageWidth: 24,
+                                imageHeight: 20,
+                                isArrow: false,
+                                color: .gray,
+                                content: "Ø")
+                        ,
+                        firstValue: convertMinutesToStringForView(mins: self.avgMinsPerKm)
+                        , secondSymbol: CalculationSymbol(
                             imageName: "clock.arrow.2.circlepath",
                             imageWidth: 24,
                             imageHeight: 20,
-                            isArrow: false,
-                            color: .gray,
-                            content: "Ø")
-                    ,
-                    firstValue: convertMinutesToStringForView(mins: self.avgMinsPerKm)
-                    , secondSymbol: CalculationSymbol(
-                        imageName: "clock.arrow.2.circlepath",
-                        imageWidth: 24,
-                        imageHeight: 20,
-                        isArrow: true,
-                        color: .green,
-                        content: "arrow.up"
-                    ),
-                    secondValue: convertMinutesToStringForView(mins: self.minAvg),
-                    thirdSymbol: CalculationSymbol(
-                        imageName: "clock.arrow.2.circlepath",
-                        imageWidth: 24,
-                        imageHeight: 20,
-                        isArrow: true,
-                        color: .red,
-                        content: "arrow.down"
-                    ),
-                    thirdValue: convertMinutesToStringForView(mins: self.maxAvg)
-                )
+                            isArrow: true,
+                            color: .green,
+                            content: "arrow.up"
+                        ),
+                        secondValue: convertMinutesToStringForView(mins: self.minAvg),
+                        thirdSymbol: CalculationSymbol(
+                            imageName: "clock.arrow.2.circlepath",
+                            imageWidth: 24,
+                            imageHeight: 20,
+                            isArrow: true,
+                            color: .red,
+                            content: "arrow.down"
+                        ),
+                        thirdValue: convertMinutesToStringForView(mins: self.maxAvg),
+                        scrollViewProxy: value
+                    ).id(2)
+                }
             }
         }
     }
@@ -459,11 +464,24 @@ struct CalculationView: View {
     let thirdSymbol: CalculationSymbol
     let thirdValue: String
     
+    let scrollViewProxy: ScrollViewProxy
     
     var body: some View {
         HStack {
             VStack {
                 HStack {
+                    
+                    if(!isFirstView) {
+                        Button(action: {
+                            scrollViewProxy.scrollTo(1)
+                        }, label: {
+                            Image(systemName: "arrow.turn.up.left")
+                                .resizable()
+                                .frame(width: 13, height: 10)
+                                .foregroundColor(.gray)
+                        })
+                    }
+                    
                     Spacer()
                     
                     Text(headline)
@@ -472,11 +490,16 @@ struct CalculationView: View {
                     
                     Spacer()
                     
+                    
                     if(isFirstView) {
-                        Image(systemName: "arrowshape.zigzag.forward")
-                            .resizable()
-                            .frame(width: 15, height: 10)
-                            .foregroundColor(.gray)
+                        Button(action: {
+                            scrollViewProxy.scrollTo(2)
+                        }, label: {
+                            Image(systemName: "arrow.turn.up.right")
+                                .resizable()
+                                .frame(width: 13, height: 10)
+                                .foregroundColor(.gray)
+                        })
                     }
                 }
                 
