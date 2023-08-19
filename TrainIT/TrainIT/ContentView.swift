@@ -514,7 +514,10 @@ struct CalculationView: View {
                         HStack{
                             firstSymbol
                         }
-                        RoadValueTypeDescriptionView(value: firstValue)
+                        ValueTypeDescriptionView(
+                            value: firstValue,
+                            isFirstView: isFirstView
+                        )
                     }
                     
                     Spacer()
@@ -523,7 +526,10 @@ struct CalculationView: View {
                         HStack{
                             secondSymbol
                         }
-                        RoadValueTypeDescriptionView(value: secondValue)
+                        ValueTypeDescriptionView(
+                            value: secondValue,
+                            isFirstView: isFirstView
+                        )
                     }
                     
                     Spacer()
@@ -532,7 +538,10 @@ struct CalculationView: View {
                         HStack{
                             thirdSymbol
                         }
-                        RoadValueTypeDescriptionView(value: thirdValue)
+                        ValueTypeDescriptionView(
+                            value: thirdValue,
+                            isFirstView: isFirstView
+                        )
                     }
                 }
             }
@@ -540,9 +549,10 @@ struct CalculationView: View {
     }
 }
 
-struct RoadValueTypeDescriptionView: View {
+struct ValueTypeDescriptionView: View {
     
     let value: String
+    let isFirstView: Bool
     
     var body: some View {
         HStack{
@@ -553,11 +563,20 @@ struct RoadValueTypeDescriptionView: View {
             Spacer()
                 .frame(width: 4.0)
             
-            VStack{
-                Spacer()
-                Text("km's")
-                    .font(.system(size: 9))
-                    .foregroundColor(.gray)
+            if isFirstView {
+                
+                VStack{
+                    Spacer()
+                    Text("km's")
+                        .font(.system(size: 9))
+                        .foregroundColor(.gray)
+                }
+                
+            } else {
+                VStack {
+                    Text("Ø").font(.system(size: 10))
+                    Text("km\\m").font(.system(size: 9)).foregroundColor(.gray)
+                }
             }
         }
     }
