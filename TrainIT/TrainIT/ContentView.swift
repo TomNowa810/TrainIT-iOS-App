@@ -127,23 +127,14 @@ struct AddRunView: View {
                 }).buttonStyle(.bordered)
                 
             }.padding()
-            
         }
     }
     func addRuns(length: Double, minutes: Int, seconds: Int, date: Date){
-        let lastAvg = runCollection.last?.averageMinPerKm ?? 0
-        let minutesTotal = calculateMinutesTotal(minutes: minutes, seconds: seconds)
-        let currentAvg = calculateAvg(minutesTotal: minutesTotal, length: length)
+        let lastAvg: Double = runCollection.last?.averageMinPerKm ?? 0
+        let minutesTotal: Double = calculateMinutesTotal(minutes: minutes, seconds: seconds)
+        let currentAvg: Double = calculateAvg(minutesTotal: minutesTotal, length: length)
         
-        var improvementParam: ImprovementEnum {
-            if(currentAvg < lastAvg) {
-                return ImprovementEnum.improved
-            }
-            else if(currentAvg > lastAvg) {
-                return ImprovementEnum.deteriorated
-            }
-            return ImprovementEnum.equal
-        }
+        let improvementStatus: ImprovementEnum = getImprovementStatus(currentAvg: currentAvg, lastAvg: lastAvg)
         
         runCollection.append(
             Run(
@@ -154,17 +145,9 @@ struct AddRunView: View {
                 date: date,
                 minutesTotal: minutesTotal,
                 averageKmPerKm: currentAvg,
-                improvement: improvementParam
+                improvement: improvementStatus
             )
         )
-    }
-    
-    func calculateAvg(minutesTotal: Double, length: Double) -> Double {
-        return round((minutesTotal / length) * 100) / 100
-    }
-    
-    func calculateMinutesTotal(minutes: Int, seconds: Int) -> Double{
-        return Double(minutes) + Double(seconds / 60)
     }
 }
 
@@ -183,14 +166,6 @@ struct RunInsights: View {
     }
 }
 
-extension DateFormatter {
-    static let displayDate: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d.MM.YYYY"
-        return formatter
-    }()
-}
-
 struct RunListElement: View {
     @ScaledMetric var space = 8
     
@@ -201,21 +176,6 @@ struct RunListElement: View {
             return 50
         }
         return 46
-    }
-    
-    
-    var formattedAvg: String {
-        let secondsTotal = Int(run.averageMinPerKm * 60);
-        let minutes = (secondsTotal % 3600) / 60
-        let seconds = secondsTotal % 60
-        
-        var secondsString = String(seconds)
-        
-        if(secondsString.count == 1){
-            secondsString = "0" + secondsString
-        }
-        
-        return String(minutes) + ":" + secondsString
     }
     
     var body: some View {
@@ -239,7 +199,6 @@ struct RunListElement: View {
                     Text(DateFormatter.displayDate.string(from: run.date))
                         .foregroundColor(.secondary)
                         .font(.system(size: 10))
-                    
                 }
                 
                 Spacer()
@@ -252,9 +211,9 @@ struct RunListElement: View {
             }
             
             let(systemName, color, width, heigh) = arrowValues(run: run)
+            let formattedAvg = convertMinutesToStringForView(mins: run.averageMinPerKm)
             
             Spacer()
-            
             
             HStack {
                 Image(systemName: systemName)
@@ -270,106 +229,15 @@ struct RunListElement: View {
                     Text("km\\m").font(.system(size: 10)).foregroundColor(.gray)
                 }
             }
-            
-            
         }.padding().frame(width: 400.0, height: 60.0)
-    }
-    func arrowValues(run: Run) -> (
-        systemName: String,
-        color: Color,
-        width: Double,
-        height: Double
-    ){
-        
-        switch run.improvement {
-            
-        case ImprovementEnum.improved :
-            return ("arrow.up", .green, 12, 15)
-            
-        case ImprovementEnum.deteriorated:
-            return ("arrow.down", .red, 12, 15)
-            
-        default:
-            return ("equal.circle", .gray, 15, 15)
-        }
     }
 }
 
 struct RunPredictionElement: View {
     @Binding var runCollection: Array<Run>
     
-    var kmAvg: Double {
-        var sum: Double = 0
-        
-        for run in runCollection {
-            sum += run.length
-        }
-        return roundAndDeviceByRunElements(value: sum)
-    }
-    
-    var kmMax: Double {
-        var max: Double = 0
-        
-        for run in runCollection {
-            if(max < run.length) {
-                max = run.length
-            }
-        }
-        return roundOnTwoDecimalPlaces(value: max)
-    }
-    
-    var kmMin: Double {
-        var min: Double = runCollection.first?.length ?? 10.0
-        
-        for run in runCollection {
-            if(min > run.length) {
-                min = run.length
-            }
-        }
-        return roundOnTwoDecimalPlaces(value: min)
-    }
-    
-    var minAvg: Double {
-        var min: Double = runCollection.first?.averageMinPerKm ?? 10.0
-        
-        for run in runCollection {
-            if(min > run.averageMinPerKm) {
-                min = run.averageMinPerKm
-            }
-        }
-        return roundOnTwoDecimalPlaces(value: min)
-    }
-    
-    var maxAvg: Double {
-        var max: Double = 0
-        
-        for run in runCollection {
-            if(max < run.averageMinPerKm) {
-                max = run.averageMinPerKm
-            }
-        }
-        return roundOnTwoDecimalPlaces(value: max)
-    }
-    
-    var avgMinsPerKm: Double {
-        var sum: Double = 0
-        
-        for run in runCollection {
-            sum += run.averageMinPerKm
-        }
-        return roundAndDeviceByRunElements(value: sum)
-    }
-    
-    func roundAndDeviceByRunElements(value: Double) -> Double {
-        return roundOnTwoDecimalPlaces(value: (value / Double(runCollection.count)))
-    }
-    
-    func roundOnTwoDecimalPlaces(value: Double) -> Double {
-        return  round(value * 100) / 100
-    }
-    
     var body: some View {
-        
+        let (kmMax, kmAvg, kmMin, minAvg, maxAvg, avgMinsPerKm) = calculateRunValues(runCollection: runCollection)
         
         ScrollView(.horizontal, showsIndicators: true) {
             ScrollViewReader {
@@ -389,7 +257,7 @@ struct RunPredictionElement: View {
                                 color: .gray,
                                 content: "Ø")
                         ,
-                        firstValue: self.kmAvg.formatted()
+                        firstValue: kmAvg.formatted()
                         , secondSymbol: CalculationSymbol(
                             imageName: "road.lanes",
                             imageWidth: 22,
@@ -398,7 +266,7 @@ struct RunPredictionElement: View {
                             color: .green,
                             content: "arrow.up"
                         ),
-                        secondValue: self.kmMax.formatted(),
+                        secondValue: kmMax.formatted(),
                         thirdSymbol: CalculationSymbol(
                             imageName: "road.lanes",
                             imageWidth: 22,
@@ -407,7 +275,7 @@ struct RunPredictionElement: View {
                             color: .red,
                             content: "arrow.down"
                         ),
-                        thirdValue: self.kmMin.formatted(),
+                        thirdValue: kmMin.formatted(),
                         scrollViewProxy: value
                     ).id(1)
                     
@@ -423,7 +291,7 @@ struct RunPredictionElement: View {
                                 color: .gray,
                                 content: "Ø")
                         ,
-                        firstValue: convertMinutesToStringForView(mins: self.avgMinsPerKm)
+                        firstValue: convertMinutesToStringForView(mins: avgMinsPerKm)
                         , secondSymbol: CalculationSymbol(
                             imageName: "clock.arrow.2.circlepath",
                             imageWidth: 24,
@@ -432,7 +300,7 @@ struct RunPredictionElement: View {
                             color: .green,
                             content: "arrow.up"
                         ),
-                        secondValue: convertMinutesToStringForView(mins: self.minAvg),
+                        secondValue: convertMinutesToStringForView(mins: minAvg),
                         thirdSymbol: CalculationSymbol(
                             imageName: "clock.arrow.2.circlepath",
                             imageWidth: 24,
@@ -441,7 +309,7 @@ struct RunPredictionElement: View {
                             color: .red,
                             content: "arrow.down"
                         ),
-                        thirdValue: convertMinutesToStringForView(mins: self.maxAvg),
+                        thirdValue: convertMinutesToStringForView(mins: maxAvg),
                         scrollViewProxy: value
                     ).id(2)
                 }
