@@ -50,7 +50,7 @@ struct ContentView: View {
                         }
                     }
                     Section(header: Text("Auswertung")) {
-                        RunPredictionElement(runCollection: $runCollection)
+                        CalculationView(runCollection: $runCollection)
                     }
                 }
                 .navigationTitle("Alle Läufe")
@@ -61,7 +61,7 @@ struct ContentView: View {
                     Image(systemName: "square.and.pencil")
                 }))
             }.sheet(isPresented: $showRunSheet, content: {
-                AddRunView(showRunSheet: $showRunSheet, runCollection: $runCollection)
+                AddRunSheet(showRunSheet: $showRunSheet, runCollection: $runCollection)
             })
             .tabItem{
                 Image(systemName: "figure.run.square.stack")
@@ -79,7 +79,7 @@ struct ContentView: View {
     }
 }
 
-struct AddRunView: View {
+struct AddRunSheet: View {
     
     @State private var kilometerAmount: String = ""
     @State private var minutesAmount: String = ""
@@ -119,7 +119,7 @@ struct AddRunView: View {
                 .datePickerStyle(.graphical)
                 
                 Button("Hinzufügen", action: {
-                    addRuns(length: Double(kilometerAmount.replacing(",", with: ".")) ?? 0,
+                    addRun(length: Double(kilometerAmount.replacing(",", with: ".")) ?? 0,
                             minutes: Int(minutesAmount) ?? 0,
                             seconds: 20,
                             date: date)
@@ -129,7 +129,7 @@ struct AddRunView: View {
             }.padding()
         }
     }
-    func addRuns(length: Double, minutes: Int, seconds: Int, date: Date){
+    func addRun(length: Double, minutes: Int, seconds: Int, date: Date){
         let lastAvg: Double = runCollection.last?.averageMinPerKm ?? 0
         let minutesTotal: Double = calculateMinutesTotal(minutes: minutes, seconds: seconds)
         let currentAvg: Double = calculateAvg(minutesTotal: minutesTotal, length: length)
@@ -233,7 +233,7 @@ struct RunListElement: View {
     }
 }
 
-struct RunPredictionElement: View {
+struct CalculationView: View {
     @Binding var runCollection: Array<Run>
     
     var body: some View {
@@ -245,7 +245,7 @@ struct RunPredictionElement: View {
                 
                 HStack(spacing: 100) {
                     
-                    CalculationView(
+                    CalculationPageStructure(
                         headline: "Distanz - Werte",
                         isFirstView: true,
                         firstSymbol:
@@ -279,7 +279,7 @@ struct RunPredictionElement: View {
                         scrollViewProxy: value
                     ).id(1)
                     
-                    CalculationView(
+                    CalculationPageStructure(
                         headline: "Zeit - Werte",
                         isFirstView: false,
                         firstSymbol:
@@ -318,7 +318,7 @@ struct RunPredictionElement: View {
     }
 }
 
-struct CalculationView: View {
+struct CalculationPageStructure: View {
     
     let headline: String
     let isFirstView: Bool
@@ -382,7 +382,7 @@ struct CalculationView: View {
                         HStack{
                             firstSymbol
                         }
-                        ValueTypeDescriptionView(
+                        TypeDescriptionForCalculationValue(
                             value: firstValue,
                             isFirstView: isFirstView
                         )
@@ -394,7 +394,7 @@ struct CalculationView: View {
                         HStack{
                             secondSymbol
                         }
-                        ValueTypeDescriptionView(
+                        TypeDescriptionForCalculationValue(
                             value: secondValue,
                             isFirstView: isFirstView
                         )
@@ -406,7 +406,7 @@ struct CalculationView: View {
                         HStack{
                             thirdSymbol
                         }
-                        ValueTypeDescriptionView(
+                        TypeDescriptionForCalculationValue(
                             value: thirdValue,
                             isFirstView: isFirstView
                         )
@@ -417,7 +417,7 @@ struct CalculationView: View {
     }
 }
 
-struct ValueTypeDescriptionView: View {
+struct TypeDescriptionForCalculationValue: View {
     
     let value: String
     let isFirstView: Bool
