@@ -83,13 +83,14 @@ struct AddRunSheet: View {
     
     @State private var kilometerAmount: String = ""
     @State private var minutesAmount: String = ""
+    @State private var secondsAmount: String = ""
     @State private var date = Date()
     
     @Binding var showRunSheet: Bool
     @Binding var runCollection: Array<Run>
     
     var body: some View {
-        ZStack{
+        VStack{
             HStack {
                 Text("Lauf hinzufügen")
                     .font(.largeTitle)
@@ -108,26 +109,32 @@ struct AddRunSheet: View {
                     .textFieldStyle(.roundedBorder)
                 
                 TextField("Anzahl der Minuten", text: $minutesAmount)
-                    .keyboardType(.decimalPad)
+                    .keyboardType(.numberPad)
+                    .textFieldStyle(.roundedBorder)
+                
+                TextField("Anzahl der Sekunden", text: $secondsAmount)
+                    .keyboardType(.numberPad)
                     .textFieldStyle(.roundedBorder)
                 
                 DatePicker(
-                    "Start Date",
+                    "Tag des Laufes",
                     selection: $date,
                     displayedComponents: [.date]
                 )
-                .datePickerStyle(.graphical)
+                .datePickerStyle(.compact)
+                
+                Spacer().frame(height: 50)
                 
                 Button("Hinzufügen", action: {
                     addRun(length: Double(kilometerAmount.replacing(",", with: ".")) ?? 0,
                             minutes: Int(minutesAmount) ?? 0,
-                            seconds: 20,
+                            seconds: Int(secondsAmount) ?? 0,
                             date: date)
                     showRunSheet.toggle()
                 }).buttonStyle(.bordered)
                 
             }.padding()
-        }
+        }.presentationDetents([.large, .medium, .fraction(0.5)])
     }
     func addRun(length: Double, minutes: Int, seconds: Int, date: Date){
         let lastAvg: Double = runCollection.last?.averageMinPerKm ?? 0
