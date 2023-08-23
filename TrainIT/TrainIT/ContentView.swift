@@ -97,24 +97,58 @@ struct AddRunSheet: View {
                     .fontWeight(.medium)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 
-                Button("Abbrechen",
-                       role: .cancel,
-                       action: {
-                    showRunSheet.toggle()}).frame(maxWidth: .infinity, maxHeight:.infinity , alignment:.topTrailing)
-            }.padding()
+                VStack {
+                    Button(role: .cancel,
+                           action: {
+                        showRunSheet.toggle()},
+                           label: {
+                        Image(systemName: "x.circle.fill")
+                            .resizable()
+                            .foregroundColor(.gray)
+                            .frame(width: 25, height: 25)
+                            .frame(maxWidth: .infinity,
+                                   maxHeight: .infinity,
+                                   alignment: .topTrailing)}
+                    )
+                    Spacer()
+                        .frame(height: 50.0)
+                }
+                
+            }.padding().frame(height: 120.0)
             
-            VStack(alignment: .center) {
-                TextField("Anzahl der Kilometer", text: $kilometerAmount)
-                    .keyboardType(.decimalPad)
-                    .textFieldStyle(.roundedBorder)
+            VStack {
+                HStack {
+                    Image(systemName: "road.lanes")
+                        .resizable()
+                        .frame(width: 25, height: 20)
+                        .foregroundColor(.gray)
+                    
+                    TextField("Anzahl der Kilometer", text: $kilometerAmount)
+                        .keyboardType(.decimalPad)
+                        .textFieldStyle(.roundedBorder)
+                }
                 
-                TextField("Anzahl der Minuten", text: $minutesAmount)
-                    .keyboardType(.numberPad)
-                    .textFieldStyle(.roundedBorder)
+                HStack {
+                    Image(systemName: "clock")
+                        .resizable()
+                        .frame(width: 25, height: 25)
+                        .foregroundColor(.gray)
+                    
+                    TextField("Anzahl der Minuten", text: $minutesAmount)
+                        .keyboardType(.numberPad)
+                        .textFieldStyle(.roundedBorder)
+                }
                 
-                TextField("Anzahl der Sekunden", text: $secondsAmount)
-                    .keyboardType(.numberPad)
-                    .textFieldStyle(.roundedBorder)
+                HStack {
+                    Image(systemName: "clock")
+                        .resizable()
+                        .frame(width: 25, height: 25)
+                        .foregroundColor(.gray)
+                    
+                    TextField("Anzahl der Sekunden", text: $secondsAmount)
+                        .keyboardType(.numberPad)
+                        .textFieldStyle(.roundedBorder)
+                }
                 
                 DatePicker(
                     "Tag des Laufes",
@@ -133,7 +167,9 @@ struct AddRunSheet: View {
                     showRunSheet.toggle()
                 }).buttonStyle(.bordered)
                 
-            }.padding()
+            }.padding().frame(maxWidth: .infinity,
+                              maxHeight: .infinity,
+                              alignment: .center)
         }.presentationDetents([.large, .medium, .fraction(0.5)])
     }
     func addRun(length: Double, minutes: Int, seconds: Int, date: Date){
