@@ -1,4 +1,5 @@
 import SwiftUI
+import Shiny
 
 struct ContentView: View {
     
@@ -68,12 +69,10 @@ struct ContentView: View {
                 Text("Alle Läufe (" + runCollection.count.formatted() + ")")
             }
             // HOME - Übersicht
-            Text("Überblick")
+            Text("Überblick").shiny()
                 .tabItem {
                     Image(systemName: "medal")
-                        .foregroundColor(.blue)
                     Text("Überblick")
-                    
                 }
         }
     }

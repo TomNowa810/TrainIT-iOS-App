@@ -13,6 +13,7 @@
 		F97070472A7FF72100F658AB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F97070462A7FF72100F658AB /* Assets.xcassets */; };
 		F970704A2A7FF72100F658AB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F97070492A7FF72100F658AB /* Preview Assets.xcassets */; };
 		F97070522A7FF7C400F658AB /* Run.swift in Sources */ = {isa = PBXBuildFile; fileRef = F97070512A7FF7C400F658AB /* Run.swift */; };
+		F9747B752A97E96100761D4D /* Shiny in Frameworks */ = {isa = PBXBuildFile; productRef = F9747B742A97E96100761D4D /* Shiny */; };
 		F9A56E582A91083D00CA7FE4 /* FormatUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A56E572A91083D00CA7FE4 /* FormatUtils.swift */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9747B752A97E96100761D4D /* Shiny in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +94,9 @@
 			dependencies = (
 			);
 			name = TrainIT;
+			packageProductDependencies = (
+				F9747B742A97E96100761D4D /* Shiny */,
+			);
 			productName = TrainIT;
 			productReference = F970703F2A7FF72000F658AB /* TrainIT.app */;
 			productType = "com.apple.product-type.application";
@@ -120,6 +125,9 @@
 				Base,
 			);
 			mainGroup = F97070362A7FF72000F658AB;
+			packageReferences = (
+				F9747B732A97E96100761D4D /* XCRemoteSwiftPackageReference "shiny" */,
+			);
 			productRefGroup = F97070402A7FF72000F658AB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -351,6 +359,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F9747B732A97E96100761D4D /* XCRemoteSwiftPackageReference "shiny" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/maustinstar/shiny";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F9747B742A97E96100761D4D /* Shiny */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F9747B732A97E96100761D4D /* XCRemoteSwiftPackageReference "shiny" */;
+			productName = Shiny;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F97070372A7FF72000F658AB /* Project object */;
 }
