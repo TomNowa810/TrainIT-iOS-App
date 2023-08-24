@@ -73,7 +73,7 @@ struct ContentView: View {
                                 .frame(width: 20, height: 20)
                                 .foregroundColor(.indigo)
                         )
-                        .shadow(color: Color.indigo, radius: 4)
+                        .shadow(color: Color.indigo, radius: 25)
                         .opacity(0.85)
                 }))
             }.sheet(isPresented: $showRunSheet, content: {
@@ -244,7 +244,8 @@ struct RunListElement: View {
                 Image(systemName: "figure.run")
                     .resizable()
                     .frame(width: 37.0, height: 46.0)
-                    .foregroundColor(.blue)
+                    .foregroundColor(.indigo)
+                    .opacity(0.85)
             }
             
             HStack {
@@ -303,7 +304,7 @@ struct CalculationView: View {
                 HStack(spacing: 100) {
                     
                     CalculationPageStructure(
-                        headline: "Distanz - Werte",
+                        headline: "Distanz",
                         isFirstView: true,
                         firstSymbol:
                             CalculationSymbol(
@@ -337,7 +338,7 @@ struct CalculationView: View {
                     ).id(1)
                     
                     CalculationPageStructure(
-                        headline: "Zeit - Werte",
+                        headline: "Zeit",
                         isFirstView: false,
                         firstSymbol:
                             CalculationSymbol(
@@ -410,6 +411,11 @@ struct CalculationPageStructure: View {
                     Spacer()
                     
                     Text(headline)
+                        .font(.subheadline)
+                        .foregroundColor(.indigo)
+                        .opacity(0.85)
+                    
+                    Text("- Werte")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
