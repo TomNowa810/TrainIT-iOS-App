@@ -59,7 +59,22 @@ struct ContentView: View {
                                         Button(action: {
                     showRunSheet.toggle()
                 }, label: {
-                    Image(systemName: "square.and.pencil")
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [Color(.white)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing)
+                        )
+                        .frame(width: 30, height: 30)
+                        .overlay(
+                            Image(systemName: "plus")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundColor(.indigo)
+                        )
+                        .shadow(color: Color.indigo, radius: 4)
+                        .opacity(0.85)
                 }))
             }.sheet(isPresented: $showRunSheet, content: {
                 AddRunSheet(showRunSheet: $showRunSheet, runCollection: $runCollection)
