@@ -73,9 +73,9 @@ struct ContentView: View {
                                 .frame(width: 20, height: 20)
                                 .foregroundColor(.indigo)
                         )
-                        .shadow(color: Color.indigo, radius: 25)
-                        .opacity(0.85)
                         .padding()
+                        .shadow(color: Color.indigo.opacity(0.2), radius: 7)
+                        .opacity(0.85)
                 }))
             }.sheet(isPresented: $showRunSheet, content: {
                 AddRunSheet(showRunSheet: $showRunSheet, runCollection: $runCollection)
