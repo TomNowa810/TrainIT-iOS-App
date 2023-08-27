@@ -107,26 +107,35 @@ struct AddRunSheet: View {
     var body: some View {
         VStack{
             HStack {
-                Text("Lauf hinzufügen")
-                    .font(.largeTitle)
-                    .fontWeight(.medium)
+                VStack(alignment: .leading) {
+                    Text("Lauf")
+                    Text("hinzufügen")
+                }.foregroundStyle(.black)
+                    .font(.system(size: 35))
+                    .shadow(color: .indigo.opacity(0.5), radius: 20)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 
                 VStack {
                     Button(role: .cancel,
                            action: {
-                        showRunSheet.toggle()},
+                                showRunSheet.toggle()},
                            label: {
-                        Image(systemName: "x.circle.fill")
-                            .resizable()
-                            .foregroundColor(.gray)
-                            .frame(width: 25, height: 25)
-                            .frame(maxWidth: .infinity,
-                                   maxHeight: .infinity,
-                                   alignment: .topTrailing)}
+                                Circle()
+                                    .fill(.white)
+                                    .frame(width: 30, height: 30)
+                                    .overlay(
+                                        Image(systemName: "multiply")
+                                            .resizable()
+                                            .foregroundColor(.indigo)
+                                            .frame(width: 15, height: 15)
+                                    )
+                                    .padding()
+                                    .shadow(color: Color.indigo.opacity(0.6), radius: 21)
+                                    .opacity(0.8)
+                    }
                     )
                     Spacer()
-                        .frame(height: 50.0)
+                        .frame(height: 30.0)
                 }
                 
             }.padding().frame(height: 120.0)
@@ -173,13 +182,20 @@ struct AddRunSheet: View {
                 
                 Spacer().frame(height: 50)
                 
-                Button("Hinzufügen", action: {
+                Button(action: {
                     addRun(length: Double(kilometerAmount.replacing(",", with: ".")) ?? 0,
                             minutes: Int(minutesAmount) ?? 0,
                             seconds: Int(secondsAmount) ?? 0,
                             date: date)
                     showRunSheet.toggle()
-                }).buttonStyle(.bordered)
+                }, label: {
+                    Rectangle()
+                        .fill(.thinMaterial)
+                        .frame(width: 120, height: 45)
+                        .cornerRadius(20)
+                        .overlay(Text("Hinzufügen")
+                            .foregroundColor(.indigo))
+                })
                 
             }.padding().frame(maxWidth: .infinity,
                               maxHeight: .infinity,
