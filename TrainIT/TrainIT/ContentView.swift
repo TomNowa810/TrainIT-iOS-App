@@ -133,10 +133,15 @@ struct AddRunSheet: View {
             
             VStack {
                 HStack {
-                    Image(systemName: "road.lanes")
-                        .resizable()
-                        .frame(width: 25, height: 20)
-                        .foregroundColor(.gray)
+                    Circle()
+                        .fill(.white)
+                        .frame(width: 40, height: 23)
+                        .overlay(
+                            Image(systemName: "road.lanes")
+                                .resizable()
+                                .frame(width: 25, height: 20)
+                                .foregroundColor(.indigo)
+                        )
                     
                     TextField("Anzahl der Kilometer", text: $kilometerAmount)
                         .keyboardType(.decimalPad)
@@ -144,10 +149,7 @@ struct AddRunSheet: View {
                 }
                 
                 HStack {
-                    Image(systemName: "clock")
-                        .resizable()
-                        .frame(width: 25, height: 25)
-                        .foregroundColor(.gray)
+                    AddRunClockSymbol(unitDescription: "Min.")
                     
                     TextField("Anzahl der Minuten", text: $minutesAmount)
                         .keyboardType(.numberPad)
@@ -155,10 +157,7 @@ struct AddRunSheet: View {
                 }
                 
                 HStack {
-                    Image(systemName: "clock")
-                        .resizable()
-                        .frame(width: 25, height: 25)
-                        .foregroundColor(.gray)
+                    AddRunClockSymbol(unitDescription: "Sek.")
                     
                     TextField("Anzahl der Sekunden", text: $secondsAmount)
                         .keyboardType(.numberPad)
@@ -209,6 +208,33 @@ struct AddRunSheet: View {
     }
 }
 
+struct AddRunClockSymbol: View {
+
+    let unitDescription: String
+    
+    var body: some View {
+        Circle()
+            .fill(.white)
+            .frame(width: 40, height: 23)
+            .overlay(
+                Image(systemName: "clock")
+                    .resizable()
+                    .frame(width: 25, height: 25)
+                    .foregroundColor(.indigo)
+            )
+            .overlay(
+                Rectangle()
+                    .fill(.gray)
+                    .frame(width: 20, height: 10)
+                    .cornerRadius(20)
+                    .overlay(
+                        Text(unitDescription)
+                            .foregroundColor(.white)
+                            .font(.system(size: 7))
+                    )
+                , alignment: .bottomTrailing)
+    }
+}
 
 struct RunInsights: View {
     var run: Run
@@ -247,7 +273,7 @@ struct RunListElement: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit))
                     .frame(width: 37.0, height: 46.0)
-                    .opacity(0.85)
+                    .opacity(0.75)
             }
             
             HStack {
