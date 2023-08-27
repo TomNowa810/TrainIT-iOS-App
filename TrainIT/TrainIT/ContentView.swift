@@ -75,6 +75,7 @@ struct ContentView: View {
                         )
                         .shadow(color: Color.indigo, radius: 25)
                         .opacity(0.85)
+                        .padding()
                 }))
             }.sheet(isPresented: $showRunSheet, content: {
                 AddRunSheet(showRunSheet: $showRunSheet, runCollection: $runCollection)
@@ -241,10 +242,11 @@ struct RunListElement: View {
                 .frame(width: 14.0)
             
             HStack {
-                Image(systemName: "figure.run")
+                LinearGradient(gradient: Gradient(colors: [.indigo, .blue]), startPoint: .top, endPoint: .bottom)
+                    .mask(Image(systemName: "figure.run")
                     .resizable()
+                    .aspectRatio(contentMode: .fit))
                     .frame(width: 37.0, height: 46.0)
-                    .foregroundColor(.indigo)
                     .opacity(0.85)
             }
             
