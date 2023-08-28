@@ -74,10 +74,14 @@ func arrowValues(run: Run) -> (
 }
 
 func getImprovementStatus(currentAvg: Double, lastAvg: Double) -> ImprovementEnum {
-    if(currentAvg < lastAvg) {
+    if lastAvg == 0 {
+        return ImprovementEnum.equal
+    }
+    
+    if currentAvg < lastAvg {
         return ImprovementEnum.improved
     }
-    else if(currentAvg > lastAvg) {
+    else if currentAvg > lastAvg {
         return ImprovementEnum.deteriorated
     }
     return ImprovementEnum.equal
