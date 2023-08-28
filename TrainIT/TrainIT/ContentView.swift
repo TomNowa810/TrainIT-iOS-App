@@ -11,14 +11,20 @@ struct ContentView: View {
         TabView {
             NavigationStack {
                 List {
-                    Section {
-                        ForEach(runCollection) {
-                            run in
-                            NavigationLink(destination: RunInsights(run: run)){
-                                RunListElement(run: run)
+                    
+                    if !runCollection.isEmpty {
+                        Section {
+                            ForEach(runCollection) {
+                                run in
+                                NavigationLink(destination: RunInsights(run: run)){
+                                    RunListElement(run: run)
+                                }
                             }
                         }
-                    }.disabled(runCollection.isEmpty)
+                    } else {
+                        EmptyRunsListElement()
+                    }
+                    
                     if runCollection.count > 1 {
                         Section(header: Text("Auswertung")) {
                             CalculationView(runCollection: $runCollection)
@@ -64,6 +70,37 @@ struct ContentView: View {
                     Text("Überblick")
                 }
         }
+    }
+}
+
+struct EmptyRunsListElement: View {
+    var body: some View {
+        VStack {
+            LinearGradient(gradient: Gradient(colors: [.indigo, .blue]), startPoint: .top, endPoint: .bottom)
+                .mask(Image(systemName: "figure.wave")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit))
+                .frame(width: 100.0, height: 180)
+                .opacity(0.75)
+            
+            Spacer()
+                .frame(height: 80.0)
+            
+            VStack {
+                
+                Text("Du hast noch keine Läufe eingetragen!")
+                    .font(.system(size: 20))
+                
+                Spacer()
+                    .frame(height: 10.0)
+                
+                Text("Benutze den + Button um einen Lauf hinzuzufügen")
+                    .font(.system(size: 12))
+                    .foregroundColor(.secondary)
+            }
+        }
+        .frame(alignment: .center)
+        .padding().frame(width: 400.0, height: 650.0)
     }
 }
 
