@@ -317,7 +317,7 @@ struct RunListElement: View {
                     .frame(width: widthSpacer)
                 
                 VStack(alignment: .center) {
-                    Text(run.minutes.formatted() + ":" + run.seconds.formatted())
+                    Text(run.minutes.formatted() + ":" + createSecondStringPart(seconds: run.seconds))
                     Text(run.length.formatted() + " km")
                 }.font(.system(size: 16))
             }

@@ -94,3 +94,10 @@ func calculateAvg(minutesTotal: Double, length: Double) -> Double {
 func calculateMinutesTotal(minutes: Int, seconds: Int) -> Double{
     return Double(minutes) + Double(seconds / 60)
 }
+
+func createSecondStringPart(seconds: Int) -> String {
+    if(seconds < 10){
+        return "0" + seconds.formatted()
+    }
+    return seconds.formatted()
+}
