@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 extension DateFormatter {
     static let displayDate: DateFormatter = {
@@ -35,4 +36,13 @@ func roundOnTwoDecimalPlaces(value: Double) -> Double {
 
 func roundAndDeviceByRunElements(value: Double, divisionValue: Double) -> Double {
     return roundOnTwoDecimalPlaces(value: (value / divisionValue))
+}
+
+struct BackgroundColorGradient : View {
+    var body: some View {
+        LinearGradient(
+            colors: [.white, Color(UIColor(named: "AccentColor") ?? .yellow)],
+            startPoint: .leading, endPoint: .bottom)
+        .opacity(0.4).padding(-5.0).ignoresSafeArea(.all)
+    }
 }

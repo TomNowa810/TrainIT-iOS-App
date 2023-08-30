@@ -19,10 +19,13 @@ struct ContentView: View {
                                 NavigationLink(destination: RunInsights(run: run)){
                                     RunListElement(run: run)
                                 }
-                            }
+                            }.onDelete(perform: deleteRun)
+                        }
+                        if runCollection.count == 1 {
+                            OnlyOneRunMask()
                         }
                     } else {
-                        EmptyRunsListElement()
+                        EmptyRunsListMask()
                     }
                     
                     if runCollection.count > 1 {
@@ -69,38 +72,10 @@ struct ContentView: View {
                     Image(systemName: "medal")
                     Text("Überblick")
                 }
-        }
+        }.accentColor(.indigo.opacity(0.8))
     }
-}
-
-struct EmptyRunsListElement: View {
-    var body: some View {
-        VStack {
-            LinearGradient(gradient: Gradient(colors: [.indigo, .blue]), startPoint: .top, endPoint: .bottom)
-                .mask(Image(systemName: "figure.wave")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit))
-                .frame(width: 100.0, height: 180)
-                .opacity(0.75)
-            
-            Spacer()
-                .frame(height: 80.0)
-            
-            VStack {
-                
-                Text("Du hast noch keine Läufe eingetragen!")
-                    .font(.system(size: 20))
-                
-                Spacer()
-                    .frame(height: 10.0)
-                
-                Text("Benutze den + Button um einen Lauf hinzuzufügen")
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-            }
-        }
-        .frame(alignment: .center)
-        .padding().frame(width: 400.0, height: 650.0)
+    func deleteRun(at offset: IndexSet) {
+        runCollection.remove(atOffsets: offset)
     }
 }
 
@@ -122,7 +97,6 @@ struct AddRunSheet: View {
                     Text("hinzufügen")
                 }.foregroundStyle(.black)
                     .font(.system(size: 35))
-                    .shadow(color: .indigo.opacity(0.5), radius: 20)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 
                 VStack {
