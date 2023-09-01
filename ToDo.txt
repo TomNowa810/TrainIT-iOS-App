@@ -1,0 +1,18 @@
+Add Regular Expression to input Fields
+
+Add prediction section 
+	- calculated prediction on time 
+	
+Integrate point system/scala
+
+Change Colors on Shiny Lib
+
+
+Integrate Run Tracking
+	- Add Tracking TabView
+	- Integrate time tracking
+	- Integrate map
+		-> integrate tracking with GPS
+		-> integrate route marking
+ 
+
