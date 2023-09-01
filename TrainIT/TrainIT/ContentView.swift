@@ -306,13 +306,14 @@ struct RunListElement: View {
                     .resizable()
                     .frame(width: width, height: heigh)
                     .foregroundColor(color)
+                
                 Text(formattedAvg)
                     .font(.system(size: 23))
                 
                 
                 VStack {
                     Text("Ø").font(.system(size: 12))
-                    Text("km\\m").font(.system(size: 10)).foregroundColor(.gray)
+                    Text("m\\km").font(.system(size: 10)).foregroundColor(.gray)
                 }
             }
         }.padding().frame(width: 400.0, height: 60.0)

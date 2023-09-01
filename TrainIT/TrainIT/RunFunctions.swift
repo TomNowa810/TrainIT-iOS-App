@@ -88,11 +88,12 @@ func getImprovementStatus(currentAvg: Double, lastAvg: Double) -> ImprovementEnu
 }
 
 func calculateAvg(minutesTotal: Double, length: Double) -> Double {
-    return round((minutesTotal / length) * 100) / 100
+    return roundOnTwoDecimalPlaces(value:  minutesTotal / length)
 }
 
 func calculateMinutesTotal(minutes: Int, seconds: Int) -> Double{
-    return Double(minutes) + Double(seconds / 60)
+    let secondsToMin: Double = Double(seconds) / 60
+    return roundOnTwoDecimalPlaces(value: Double(minutes) + secondsToMin) 
 }
 
 func createSecondStringPart(seconds: Int) -> String {

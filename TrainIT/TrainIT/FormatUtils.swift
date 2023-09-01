@@ -11,7 +11,7 @@ import SwiftUI
 extension DateFormatter {
     static let displayDate: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "d.MM.YYYY"
+        formatter.dateFormat = "dd.MM.YYYY"
         return formatter
     }()
 }
