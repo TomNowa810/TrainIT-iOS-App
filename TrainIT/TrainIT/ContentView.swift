@@ -88,6 +88,11 @@ struct AddRunSheet: View {
     
     @Binding var showRunSheet: Bool
     @Binding var runCollection: Array<Run>
+
+    @State private var kmTextFieldColor: Color = .gray.opacity(0.2)
+    @State private var minutesTextFieldColor: Color = .gray.opacity(0.2)
+    @State private var secondsTextFieldColor: Color = .gray.opacity(0.2)
+
     
     var body: some View {
         VStack{
@@ -138,7 +143,11 @@ struct AddRunSheet: View {
                     
                     TextField("Anzahl der Kilometer", text: $kilometerAmount)
                         .keyboardType(.decimalPad)
-                        .textFieldStyle(.roundedBorder)
+                        .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(kmTextFieldColor, lineWidth: 1)
+                            )
+                        .multilineTextAlignment(.center)
                 }
                 
                 HStack {
@@ -146,7 +155,11 @@ struct AddRunSheet: View {
                     
                     TextField("Anzahl der Minuten", text: $minutesAmount)
                         .keyboardType(.numberPad)
-                        .textFieldStyle(.roundedBorder)
+                        .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(minutesTextFieldColor, lineWidth: 1)
+                            )
+                        .multilineTextAlignment(.center)
                 }
                 
                 HStack {
@@ -154,7 +167,11 @@ struct AddRunSheet: View {
                     
                     TextField("Anzahl der Sekunden", text: $secondsAmount)
                         .keyboardType(.numberPad)
-                        .textFieldStyle(.roundedBorder)
+                        .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(secondsTextFieldColor, lineWidth: 1)
+                            )
+                        .multilineTextAlignment(.center)
                 }
                 
                 DatePicker(
@@ -167,11 +184,27 @@ struct AddRunSheet: View {
                 Spacer().frame(height: 50)
                 
                 Button(action: {
-                    addRun(length: Double(kilometerAmount.replacing(",", with: ".")) ?? 0,
-                            minutes: Int(minutesAmount) ?? 0,
-                            seconds: Int(secondsAmount) ?? 0,
-                            date: date)
-                    showRunSheet.toggle()
+                    
+                    if kilometerAmount.isEmpty {
+                        kmTextFieldColor = .red
+                    }
+                    
+                    if minutesAmount.isEmpty {
+                        minutesTextFieldColor = .red
+                    }
+                    
+                    if secondsAmount.isEmpty {
+                        secondsTextFieldColor = .red
+                    }
+                    
+                    if !minutesAmount.isEmpty {
+                        
+                        addRun(length: Double(kilometerAmount.replacing(",", with: ".")) ?? 0,
+                               minutes: Int(minutesAmount) ?? 0,
+                               seconds: Int(secondsAmount) ?? 0,
+                               date: date)
+                        showRunSheet.toggle()
+                    }
                 }, label: {
                     Rectangle()
                         .fill(.thinMaterial)
