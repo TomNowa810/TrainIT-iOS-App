@@ -92,6 +92,12 @@ struct AddRunSheet: View {
     @State private var kmTextFieldColor: Color = .gray.opacity(0.2)
     @State private var minutesTextFieldColor: Color = .gray.opacity(0.2)
     @State private var secondsTextFieldColor: Color = .gray.opacity(0.2)
+    
+    @State private var isKmFieldEmpty: Bool = false
+    @State private var isMinsFieldEmpty: Bool = false
+    @State private var isSecsFieldEmpty: Bool = false
+
+    @State private var isSecsInCorrectRange: Bool = true
 
     
     var body: some View {
@@ -150,6 +156,10 @@ struct AddRunSheet: View {
                         .multilineTextAlignment(.center)
                 }
                 
+                if isKmFieldEmpty {
+                    Text("Trage noch die Kilometer ein!").font(.system(size: 13)).italic()
+                }
+                
                 HStack {
                     AddRunClockSymbol(unitDescription: "Min.")
                     
@@ -162,6 +172,10 @@ struct AddRunSheet: View {
                         .multilineTextAlignment(.center)
                 }
                 
+                if isMinsFieldEmpty {
+                    Text("Trage noch die Minuten ein!").font(.system(size: 13)).italic()
+                }
+                
                 HStack {
                     AddRunClockSymbol(unitDescription: "Sek.")
                     
@@ -172,6 +186,12 @@ struct AddRunSheet: View {
                                     .stroke(secondsTextFieldColor, lineWidth: 1)
                             )
                         .multilineTextAlignment(.center)
+                }
+                
+                if isSecsFieldEmpty {
+                    Text("Trage noch die Sekunden ein!").font(.system(size: 13)).italic()
+                } else if !isSecsInCorrectRange {
+                    Text("Es werden nur Werte von 0 - 59 akzeptiert!").font(.system(size: 13)).italic()
                 }
                 
                 DatePicker(
@@ -187,17 +207,36 @@ struct AddRunSheet: View {
                     
                     if kilometerAmount.isEmpty {
                         kmTextFieldColor = .red
+                        isKmFieldEmpty = true
+                    } else {
+                        kmTextFieldColor = .gray.opacity(0.2)
+                        isKmFieldEmpty = false
                     }
                     
                     if minutesAmount.isEmpty {
                         minutesTextFieldColor = .red
+                        isMinsFieldEmpty = true
+                    } else {
+                        minutesTextFieldColor = .gray.opacity(0.2)
+                        isMinsFieldEmpty = false
                     }
                     
                     if secondsAmount.isEmpty {
                         secondsTextFieldColor = .red
+                        isSecsFieldEmpty = true
+                        
+                    } else if Int(secondsAmount)! < 60{
+                        secondsTextFieldColor = .gray.opacity(0.2)
+                        isSecsInCorrectRange = true
+                        isSecsFieldEmpty = false
+                        
+                    } else {
+                        secondsTextFieldColor = .red
+                        isSecsFieldEmpty = false
+                        isSecsInCorrectRange = false
                     }
                     
-                    if !minutesAmount.isEmpty {
+                    if !isKmFieldEmpty && !isMinsFieldEmpty && !isSecsFieldEmpty && isSecsInCorrectRange{
                         
                         addRun(length: Double(kilometerAmount.replacing(",", with: ".")) ?? 0,
                                minutes: Int(minutesAmount) ?? 0,
