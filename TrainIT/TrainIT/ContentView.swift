@@ -16,7 +16,7 @@ struct ContentView: View {
                         Section {
                             ForEach(runCollection) {
                                 run in
-                                NavigationLink(destination: RunInsights(run: run)){
+                                NavigationLink(destination: RunInsight(run: run)){
                                     RunListElement(run: run)
                                 }
                             }.onDelete(perform: deleteRun)
@@ -308,17 +308,52 @@ struct AddRunClockSymbol: View {
     }
 }
 
-struct RunInsights: View {
+struct RunInsight: View {
     var run: Run
     
     var body: some View {
-        VStack {
-            Image(systemName: "figure.mixed.cardio")
-                .foregroundColor(.blue)
-                .frame(width: 50, height: 50)
-            Text("Durchschnittlichen Minuten pro KM:")
-            Text(run.averageMinPerKm.formatted() + " Min")
-        }
+        VStack(spacing: 30) {
+            
+            HStack {
+                HStack {
+                    Text("Lauf Nummer: ")
+                    Text(run.number.formatted())
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.indigo, .blue],       // TODO -> outsource Gradients
+                                startPoint: .top,
+                                endPoint: .bottom
+                            ))
+                    
+                    Spacer()
+                        
+                }.padding(.leading, 10.0)
+                    .font(.system(size: 25))
+                    .fontWeight(.light)
+                
+                Spacer()
+                
+                Circle()
+                    .fill(.white)
+                    .shadow(color: Color.indigo.opacity(0.5), radius: 20)
+                    .frame(width: 30, height: 30)
+                    .overlay(Image(systemName: "trash")                             // TODO -> convert 2 Btn
+                        .frame(width: 100, height: 100)
+                        .foregroundColor(.indigo))
+                
+                
+                
+            }.padding(.trailing, 30.0)
+           
+            
+            Divider().frame(width: 250)
+            
+            Spacer()
+            
+            //Image(systemName: "figure.mixed.cardio")
+            //    .foregroundColor(.indigo)
+            //    .frame(width: 50, height: 50)
+        }.border(.black)
     }
 }
 

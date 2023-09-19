@@ -18,8 +18,8 @@ func calculateRunValues(runCollection: Array<Run>) -> (
 ) {
     var kmMax: Double = 0
     var kmAvg: Double = 0
-    var kmMin: Double = runCollection.first?.length ?? 10.0
-    var minAvg: Double = runCollection.first?.averageMinPerKm ?? 10.00
+    var kmMin: Double = runCollection.first?.length ?? 9999
+    var minAvg: Double = runCollection.first?.averageMinPerKm ?? 9999
     var maxAvg: Double = 0
     var avgMinsPerKm: Double = 0
     
