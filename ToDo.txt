@@ -1,10 +1,14 @@
-Add Regular Expression to input Fields
+Modify RunInsight-Sheet (Run Insight)
+
+Integrate Chart
+
+Integrate point system/scala
+
+Integrate Login Mask
 
 Add prediction section 
 	- calculated prediction on time 
 	
-Integrate point system/scala
-
 Change Colors on Shiny Lib
 
 
