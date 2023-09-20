@@ -93,7 +93,7 @@ func calculateAvg(minutesTotal: Double, length: Double) -> Double {
 
 func calculateMinutesTotal(minutes: Int, seconds: Int) -> Double{
     let secondsToMin: Double = Double(seconds) / 60
-    return roundOnTwoDecimalPlaces(value: Double(minutes) + secondsToMin) 
+    return roundOnTwoDecimalPlaces(value: Double(minutes) + secondsToMin)
 }
 
 func createSecondStringPart(seconds: Int) -> String {
@@ -101,4 +101,35 @@ func createSecondStringPart(seconds: Int) -> String {
         return "0" + seconds.formatted()
     }
     return seconds.formatted()
+}
+
+func calculateValuesAfterSelectedRun(runCollection: Array<Run>, selectedRun: Run) -> (
+    number: Int,
+    avgLength: Double,
+    avgMinutesTotal: Double,
+    lastRun: Run
+){
+    var number: Int = 0
+    var avgLength: Double = 0
+    var avgMinutesTotal: Double = 0
+    let lastRun: Run = runCollection.last!
+    
+    var isSelectedRunReached: Bool = false
+    
+    runCollection.forEach { run in
+        if isSelectedRunReached {
+            number += 1
+            avgLength += run.length
+            avgMinutesTotal += run.minutesTotal
+        }
+        
+        if run.id.elementsEqual(selectedRun.id) {
+            isSelectedRunReached = true
+        }
+    }
+    
+    avgLength = avgLength/Double(number)
+    avgMinutesTotal = avgMinutesTotal/Double(number)
+    
+    return (number,avgLength,avgMinutesTotal,lastRun)
 }
