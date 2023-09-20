@@ -5,7 +5,17 @@ struct ContentView: View {
     
     @State var showRunSheet: Bool = false
     
-    @State var runCollection: Array<Run> = []
+    @State var runCollection: Array<Run> = [
+        Run(
+                   number: 3,
+                   length: 5.53,
+                   minutes: 36,
+                   seconds: 30,
+                   date: Date.now,
+                   minutesTotal: 36.5,
+                   averageKmPerKm: 6.60,
+                   improvement: ImprovementEnum.deteriorated
+               )]
     
     var body: some View {
         TabView {
@@ -41,12 +51,7 @@ struct ContentView: View {
                             showRunSheet.toggle()},
                                label: {
                                    Circle()
-                                       .fill(
-                                        LinearGradient(
-                                            colors: [Color(.white)],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing)
-                                       )
+                                       .fill(.white)
                                        .frame(width: 30, height: 30)
                                        .overlay(
                                         Image(systemName: "plus")
@@ -318,12 +323,7 @@ struct RunInsight: View {
                 HStack {
                     Text("Lauf Nummer: ")
                     Text(run.number.formatted())
-                        .foregroundStyle(
-                            LinearGradient(
-                                colors: [.indigo, .blue],       // TODO -> outsource Gradients
-                                startPoint: .top,
-                                endPoint: .bottom
-                            ))
+                        .foregroundStyle(defaultGradient)
                     
                     Spacer()
                         
@@ -375,7 +375,7 @@ struct RunListElement: View {
                 .frame(width: 14.0)
             
             HStack {
-                LinearGradient(gradient: Gradient(colors: [.indigo, .blue]), startPoint: .top, endPoint: .bottom)
+                defaultGradient
                     .mask(Image(systemName: "figure.run")
                     .resizable()
                     .aspectRatio(contentMode: .fit))
@@ -662,12 +662,7 @@ struct CalculationSymbol: View {
     var body: some View {
         if(!isArrow) {
             Circle()
-                .fill(
-                    LinearGradient(
-                        colors: [Color(.gray)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing)
-                )
+                .fill(.gray)
                 .frame(width: 30, height: 30)
                 .overlay(
                     Image(systemName: imageName)
@@ -686,12 +681,7 @@ struct CalculationSymbol: View {
                     , alignment: .bottomTrailing)
         } else {
             Circle()
-                .fill(
-                    LinearGradient(
-                        colors: [Color(.gray)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing)
-                )
+                .fill(.gray)
                 .frame(width: 30, height: 30)
                 .overlay(
                     Image(systemName: imageName)
