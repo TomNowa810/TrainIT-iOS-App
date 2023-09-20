@@ -26,7 +26,7 @@ struct ContentView: View {
                         Section {
                             ForEach(runCollection) {
                                 run in
-                                NavigationLink(destination: RunInsight(run: run)){
+                                NavigationLink(destination: RunInsight(run: run, runCollection: $runCollection)){
                                     RunListElement(run: run)
                                 }
                             }.onDelete(perform: deleteRun)
@@ -315,6 +315,7 @@ struct AddRunClockSymbol: View {
 
 struct RunInsight: View {
     var run: Run
+    @Binding var runCollection: Array<Run>
     
     var body: some View {
         VStack(spacing: 30) {
@@ -347,6 +348,27 @@ struct RunInsight: View {
            
             
             Divider().frame(width: 250)
+            
+            HStack(spacing: 0) {
+                Text("Stecke: ")
+                Text(run.length.formatted())
+                    .foregroundStyle(defaultGradient)
+                
+                Text(" km")
+                    .font(.system(size: 10))
+                    .padding(.top, 6.0)
+                    
+            }.font(.system(size: 20))
+                .fontWeight(.light)
+            
+            
+            HStack(spacing: 0) {
+                Text("Zeit: ")
+                Text(convertMinutesToStringForView(mins: run.minutesTotal))
+                    .foregroundStyle(defaultGradient)
+                                    
+            }.font(.system(size: 20))
+                .fontWeight(.light)
             
             Spacer()
             
