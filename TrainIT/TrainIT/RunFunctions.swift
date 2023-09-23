@@ -8,6 +8,9 @@
 import Foundation
 import SwiftUI
 
+var bestKmOfAllRuns_runRefrenceByUuid: UUID? = nil
+var bestAvgOfAllRuns_runRefrenceByUuid: UUID? = nil
+
 func calculateRunValues(runCollection: Array<Run>) -> (
     kmMax: Double,
     kmAvg: Double,
@@ -17,9 +20,13 @@ func calculateRunValues(runCollection: Array<Run>) -> (
     avgMinsPerKm: Double
 ) {
     var kmMax: Double = 0
+    var bestKm_runUuid: UUID?
+    
     var kmAvg: Double = 0
     var kmMin: Double = runCollection.first?.length ?? 9999
     var minAvg: Double = runCollection.first?.averageMinPerKm ?? 9999
+    var bestAvg_runUuid: UUID?
+
     var maxAvg: Double = 0
     var avgMinsPerKm: Double = 0
     
@@ -30,6 +37,7 @@ func calculateRunValues(runCollection: Array<Run>) -> (
         
         if minAvg > run.averageMinPerKm {
             minAvg = run.averageMinPerKm
+            bestAvg_runUuid = run.id
         }
         
         if maxAvg < run.averageMinPerKm {
@@ -38,6 +46,7 @@ func calculateRunValues(runCollection: Array<Run>) -> (
         
         if kmMax < run.length {
             kmMax = run.length
+            bestKm_runUuid = run.id
         }
         
         kmAvg += run.length
@@ -49,6 +58,9 @@ func calculateRunValues(runCollection: Array<Run>) -> (
     minAvg = roundOnTwoDecimalPlaces(value: minAvg)
     maxAvg = roundOnTwoDecimalPlaces(value: maxAvg)
     avgMinsPerKm = roundAndDeviceByRunElements(value: avgMinsPerKm, divisionValue: Double(runCollection.count))
+    
+    bestKmOfAllRuns_runRefrenceByUuid = bestKm_runUuid
+    bestAvgOfAllRuns_runRefrenceByUuid = bestAvg_runUuid
     
     return (kmMax, kmAvg, kmMin, minAvg, maxAvg, avgMinsPerKm)
 }
@@ -123,7 +135,7 @@ func calculateValuesAfterSelectedRun(runCollection: Array<Run>, selectedRun: Run
             avgMinutesTotal += run.minutesTotal
         }
         
-        if run.id.elementsEqual(selectedRun.id) {
+        if run.id == selectedRun.id {
             isSelectedRunReached = true
         }
     }
@@ -132,4 +144,26 @@ func calculateValuesAfterSelectedRun(runCollection: Array<Run>, selectedRun: Run
     avgMinutesTotal = avgMinutesTotal/Double(number)
     
     return (number,avgLength,avgMinutesTotal,lastRun)
+}
+
+enum TrophyVisualizationStatus {
+    case trophyLessRow
+    case none
+    case trophy
+}
+
+func trophyCheckByUuid(id: UUID, isKmChecked: Bool) -> TrophyVisualizationStatus {
+    if isKmChecked {
+        if id == bestKmOfAllRuns_runRefrenceByUuid {
+            return TrophyVisualizationStatus.trophy
+        } else {
+            return TrophyVisualizationStatus.none
+        }
+    } else {
+        if id == bestAvgOfAllRuns_runRefrenceByUuid {
+            return TrophyVisualizationStatus.trophy
+        } else {
+            return TrophyVisualizationStatus.none
+        }
+    }
 }

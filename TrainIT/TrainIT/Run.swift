@@ -16,7 +16,7 @@ enum ImprovementEnum {
 
 class Run: Identifiable {
     
-    var id: String
+    var id: UUID
     var number: Int
     var length: Double
     var minutes: Int
@@ -27,7 +27,7 @@ class Run: Identifiable {
     var improvement: ImprovementEnum
     
     init(number: Int, length: Double, minutes: Int, seconds: Int, date: Date, minutesTotal: Double, averageKmPerKm: Double, improvement: ImprovementEnum) {
-        self.id = UUID().uuidString
+        self.id = UUID()
         self.number = number
         self.length = length
         self.minutes = minutes

@@ -321,13 +321,24 @@ struct RunInsight: View {
         VStack(spacing: 30) {
             
             HStack {
-                HStack {
-                    Text("Lauf Nummer: ")
-                    Text(run.number.formatted())
-                        .foregroundStyle(defaultGradient)
-                    
-                    Spacer()
+                VStack {
+                    HStack {
+                        Text("Lauf Nummer: ")
+                        Text(run.number.formatted())
+                            .foregroundStyle(defaultGradient)
                         
+                        Spacer()
+                        
+                    }
+                    HStack {
+                        Text(DateFormatter.displayDate.string(from: run.date))
+                            .font(.system(size:15))
+                            .foregroundColor(.gray)
+                            .italic()
+                        
+                        Spacer()
+                    }.padding(.leading, 30.0)
+                    
                 }.padding(.leading, 10.0)
                     .font(.system(size: 25))
                     .fontWeight(.light)
@@ -345,37 +356,95 @@ struct RunInsight: View {
                 
                 
             }.padding(.trailing, 30.0)
-           
+            
             
             Divider().frame(width: 250)
             
-            HStack(spacing: 0) {
-                Text("Stecke: ")
-                Text(run.length.formatted())
-                    .foregroundStyle(defaultGradient)
-                
-                Text(" km")
-                    .font(.system(size: 10))
-                    .padding(.top, 6.0)
-                    
-            }.font(.system(size: 20))
-                .fontWeight(.light)
+            NavigationLinkRow(
+                rowDescription: "Strecke",
+                value: run.length.formatted(),
+                unit: "km",
+                trophyStatus: trophyCheckByUuid(id: run.id, isKmChecked: true))
+            
+            NavigationLinkRow(
+                rowDescription: "Zeit",
+                value: convertMinutesToStringForView(mins: run.minutesTotal),
+                unit: "",
+                trophyStatus: TrophyVisualizationStatus.trophyLessRow)
+            
+            NavigationLinkRow(
+                rowDescription: "Durchschnitt",
+                value: convertMinutesToStringForView(mins: run.averageMinPerKm),
+                unit: "m/km",
+                trophyStatus: trophyCheckByUuid(id: run.id, isKmChecked: false))
+            
+            Divider().frame(width: 250)
+            
+            Image(systemName: "figure.mixed.cardio")
+                .foregroundStyle(defaultGradient)
+                .frame(width: 50, height: 50)
             
             
-            HStack(spacing: 0) {
-                Text("Zeit: ")
-                Text(convertMinutesToStringForView(mins: run.minutesTotal))
-                    .foregroundStyle(defaultGradient)
-                                    
-            }.font(.system(size: 20))
+            Text("Hier würdest du weitere Statistiken zu deinen folgenen Läufen sehen")
+                .multilineTextAlignment(.center)
+                .italic()
+                .font(.system(size: 15))
                 .fontWeight(.light)
+            
             
             Spacer()
+        }
+    }
+}
+
+struct NavigationLinkRow: View {
+    var rowDescription: String
+    var value: String
+    var unit: String
+    var trophyStatus: TrophyVisualizationStatus
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            HStack {
+                if trophyStatus != TrophyVisualizationStatus.trophyLessRow {
+                    if trophyStatus == TrophyVisualizationStatus.none {
+                        Image(systemName: "viewfinder")
+                            .resizable()
+                            .frame(width: 15, height: 15)
+                            .foregroundColor(.gray)
+                            .padding(.leading, 30.0)
+                    } else if trophyStatus == TrophyVisualizationStatus.trophy {
+                        Image(systemName: "trophy")
+                            .resizable()
+                            .frame(width: 20, height: 25)
+                            .foregroundStyle(LinearGradient(
+                                gradient: Gradient(colors: [Color("TrophyPrimary"), Color("TrophySecondary")]),
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )).padding(.leading, 30.0)
+                            .shadow(color: .yellow, radius: 15)
+                    }
+                }
+                
+                Spacer()
+                
+                Text(rowDescription + " : ")
+            }
             
-            //Image(systemName: "figure.mixed.cardio")
-            //    .foregroundColor(.indigo)
-            //    .frame(width: 50, height: 50)
-        }.border(.black)
+            HStack {
+                
+                Text(value)
+                    .foregroundStyle(defaultGradient)
+                
+                Text(unit)
+                    .font(.system(size: 10))
+                    .padding(.top, 6.0)
+                
+                Spacer()
+            }
+            
+        }.font(.system(size: 20))
+            .fontWeight(.light)
     }
 }
 
