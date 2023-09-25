@@ -5,17 +5,7 @@ struct ContentView: View {
     
     @State var showRunSheet: Bool = false
     
-    @State var runCollection: Array<Run> = [
-        Run(
-                   number: 3,
-                   length: 5.53,
-                   minutes: 36,
-                   seconds: 30,
-                   date: Date.now,
-                   minutesTotal: 36.5,
-                   averageKmPerKm: 6.60,
-                   improvement: ImprovementEnum.deteriorated
-               )]
+    @State var runCollection: Array<Run> = []
     
     var body: some View {
         TabView {
@@ -364,7 +354,7 @@ struct RunInsight: View {
                 rowDescription: "Strecke",
                 value: run.length.formatted(),
                 unit: "km",
-                trophyStatus: trophyCheckByUuid(id: run.id, isKmChecked: true))
+                trophyStatus: trophyCheckOnValueByUuid(id: run.id, isKmChecked: true))
             
             NavigationLinkRow(
                 rowDescription: "Zeit",
@@ -376,7 +366,7 @@ struct RunInsight: View {
                 rowDescription: "Durchschnitt",
                 value: convertMinutesToStringForView(mins: run.averageMinPerKm),
                 unit: "m/km",
-                trophyStatus: trophyCheckByUuid(id: run.id, isKmChecked: false))
+                trophyStatus: trophyCheckOnValueByUuid(id: run.id, isKmChecked: false))
             
             Divider().frame(width: 250)
             
@@ -466,12 +456,7 @@ struct RunListElement: View {
                 .frame(width: 14.0)
             
             HStack {
-                defaultGradient
-                    .mask(Image(systemName: "figure.run")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit))
-                    .frame(width: 37.0, height: 46.0)
-                    .opacity(0.75)
+                FigureOnListElement(isWithTrophy: trophyCheckByUuid(id: run.id))
             }
             
             HStack {

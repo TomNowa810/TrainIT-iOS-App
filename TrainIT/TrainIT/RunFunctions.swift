@@ -152,7 +152,7 @@ enum TrophyVisualizationStatus {
     case trophy
 }
 
-func trophyCheckByUuid(id: UUID, isKmChecked: Bool) -> TrophyVisualizationStatus {
+func trophyCheckOnValueByUuid(id: UUID, isKmChecked: Bool) -> TrophyVisualizationStatus {
     if isKmChecked {
         if id == bestKmOfAllRuns_runRefrenceByUuid {
             return TrophyVisualizationStatus.trophy
@@ -166,4 +166,11 @@ func trophyCheckByUuid(id: UUID, isKmChecked: Bool) -> TrophyVisualizationStatus
             return TrophyVisualizationStatus.none
         }
     }
+}
+
+func trophyCheckByUuid(id: UUID) -> Bool {
+    if bestKmOfAllRuns_runRefrenceByUuid == id || bestAvgOfAllRuns_runRefrenceByUuid == id {
+        return true
+    }
+    return false
 }
