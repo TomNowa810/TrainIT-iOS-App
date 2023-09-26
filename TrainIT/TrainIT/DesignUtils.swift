@@ -23,22 +23,14 @@ struct FigureOnListElement: View {
         if isWithTrophy {
             DefaultFigure()
                 .overlay(
-                        Circle()
-                            .fill(LinearGradient(
-                                gradient: Gradient(colors: [.white, Color("GrayWhite")]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ))
-                            .frame(width: 16, height: 16)
-                            .overlay(Image(systemName: "trophy.fill")
-                                .resizable()
-                                .frame(width: 10, height: 12)
-                                .foregroundStyle(LinearGradient(
-                                    gradient: Gradient(colors: [.yellow, Color("TrophyPrimary")]),
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )))
-                         , alignment: .bottomTrailing)
+                    Image(systemName: "trophy.fill")
+                        .resizable()
+                        .frame(width: 10, height: 12)
+                        .foregroundStyle(LinearGradient(
+                            gradient: Gradient(colors: [.yellow, Color("TrophyPrimary")]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )), alignment: .bottomTrailing)
         } else {
             DefaultFigure()
         }
