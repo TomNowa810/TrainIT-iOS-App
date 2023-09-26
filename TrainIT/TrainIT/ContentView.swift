@@ -5,7 +5,37 @@ struct ContentView: View {
     
     @State var showRunSheet: Bool = false
     
-    @State var runCollection: Array<Run> = []
+    @State var runCollection: Array<Run> = [
+        Run(
+            number: 1,
+            length: 5.08,
+            minutes: 32,
+            seconds: 37,
+            date: Date.now,
+            minutesTotal: 32.62,
+            averageKmPerKm: 6.61,
+            improvement: ImprovementEnum.equal
+        ),
+        Run(
+            number: 2,
+            length: 4.91,
+            minutes: 28,
+            seconds: 42,
+            date: Date.now,
+            minutesTotal: 28.73,
+            averageKmPerKm: 5.83,
+            improvement: ImprovementEnum.improved
+        ),
+        Run(
+            number: 3,
+            length: 5.53,
+            minutes: 36,
+            seconds: 30,
+            date: Date.now,
+            minutesTotal: 36.5,
+            averageKmPerKm: 6.60,
+            improvement: ImprovementEnum.deteriorated
+        )]
     
     var body: some View {
         TabView {
@@ -370,16 +400,52 @@ struct RunInsight: View {
             
             Divider().frame(width: 250)
             
-            Image(systemName: "figure.mixed.cardio")
-                .foregroundStyle(defaultGradient)
-                .frame(width: 50, height: 50)
+            let (numberOfRuns, avgLength, avgMinsTotal, lastRun) = calculateValuesAfterSelectedRun(runCollection: runCollection, selectedRun: run)
             
+            if runCollection.count > 2 && numberOfRuns > 1{
+                VStack(spacing: 20){
+                    HStack(spacing: 100) {
+                        Text(avgLength.formatted())
+                        Text(convertMinutesToStringForView(mins: avgMinsTotal))
+                    }
+                    
+                    HStack {
+                        let avg: Double = avgMinsTotal / avgLength
+                        Text(convertMinutesToStringForView(mins: roundOnTwoDecimalPlaces(value: avg)))
+                    }
+                }
+            } else {
+                VStack(spacing: 20) {
+                    Spacer()
+                    
+                    Image(systemName: "figure.mixed.cardio")
+                        .resizable()
+                        .foregroundStyle(defaultGradient)
+                        .frame(width: 80, height: 100)
+                        .opacity(0.4)
+                    
+                    Spacer()
+                    
+                    if numberOfRuns == 1 {
+                        Text("Vorletzte Läufe haben keine Statistiken zur Verfügung!")
+                        
+                    } else if numberOfRuns == 0 {
+                        Text("Letzte Läufe haben keine Statistiken zur Verfügung!")
+                        
+                    }
+                    
+                    Text("Hier würdest du weitere Statistiken zu deinen folgenen Läufen sehen")
+                        .italic()
+                        .font(.system(size: 15))
+                        .foregroundColor(.gray)
+                    
+                    Spacer()
+                    
+                }.multilineTextAlignment(.center)
+                    .fontWeight(.light)
+            }
             
-            Text("Hier würdest du weitere Statistiken zu deinen folgenen Läufen sehen")
-                .multilineTextAlignment(.center)
-                .italic()
-                .font(.system(size: 15))
-                .fontWeight(.light)
+  
             
             
             Spacer()
