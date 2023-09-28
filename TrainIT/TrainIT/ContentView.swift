@@ -403,17 +403,45 @@ struct RunInsight: View {
             let (numberOfRuns, avgLength, avgMinsTotal, lastRun) = calculateValuesAfterSelectedRun(runCollection: runCollection, selectedRun: run)
             
             if runCollection.count > 2 && numberOfRuns > 1{
+                
+                VStack(spacing: 10) {
+                    Text("Anzahl folgender Läufe")
+                        .foregroundColor(.gray)
+                        .fontWeight(.light)
+                    
+                    Text(numberOfRuns.formatted())
+                        .foregroundStyle(calculationGradient)
+                }
+                
                 VStack(spacing: 20){
                     HStack(spacing: 100) {
-                        Text(avgLength.formatted())
-                        Text(convertMinutesToStringForView(mins: avgMinsTotal))
+                        ComparisonNavigationLinkStruct(
+                            calcValue: avgLength.formatted(),
+                            value: run.length.formatted(),
+                            unitDescription: "km  "
+                        )
+                        
+                        ComparisonNavigationLinkStruct(
+                            calcValue: convertMinutesToStringForView(mins: avgMinsTotal),
+                            value: convertMinutesToStringForView(mins: run.minutesTotal),
+                            unitDescription: "zeit "
+                        )
+                        
                     }
                     
                     HStack {
                         let avg: Double = avgMinsTotal / avgLength
-                        Text(convertMinutesToStringForView(mins: roundOnTwoDecimalPlaces(value: avg)))
+                        
+                        ComparisonNavigationLinkStruct(
+                            calcValue: convertMinutesToStringForView(mins: roundOnTwoDecimalPlaces(value: avg)),
+                            value: convertMinutesToStringForView(mins: run.averageMinPerKm),
+                            unitDescription: "m/km"
+                        )
                     }
                 }
+                
+                Divider().frame(width: 250)
+                
             } else {
                 VStack(spacing: 20) {
                     Spacer()
@@ -450,6 +478,45 @@ struct RunInsight: View {
             
             Spacer()
         }
+    }
+}
+
+struct ComparisonNavigationLinkStruct: View {
+    var calcValue: String
+    var value: String
+    var unitDescription: String
+    
+    var body: some View {
+        HStack {
+            VStack {
+                Image(systemName: "arrow.up.arrow.down")
+                    .resizable()
+                    .frame(width: 8, height: 8)
+            }
+            VStack(spacing: 0) {
+                Text(calcValue)
+                    .foregroundStyle(calculationGradient)
+                
+                Divider().frame(width: 25)
+                
+                Text(value)
+                    .foregroundStyle(defaultGradient)
+                    .opacity(0.4)
+            }
+            VStack {
+                Rectangle()
+                    .fill(.white)
+                    .frame(width: 30, height: 20)
+                    .overlay(
+                        Text("Ø")
+                        , alignment: .leading)
+                    .overlay(
+                        Text(unitDescription)
+                            .font(.system(size: 6))
+                            .foregroundColor(.gray)
+                        , alignment: .bottomTrailing)
+            }
+        }.padding(.leading, 20)
     }
 }
 
@@ -540,7 +607,7 @@ struct RunListElement: View {
                     .frame(width: widthSpacer)
                 
                 VStack(alignment: .center) {
-                    Text(run.minutes.formatted() + ":" + createSecondStringPart(seconds: run.seconds))
+                    Text(convertMinutesToStringForView(mins: run.minutesTotal))
                     Text(run.length.formatted() + " km")
                 }.font(.system(size: 16))
             }
