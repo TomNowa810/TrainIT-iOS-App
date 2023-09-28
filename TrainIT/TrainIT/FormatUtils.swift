@@ -17,17 +17,27 @@ extension DateFormatter {
 }
 
 func convertMinutesToStringForView(mins: Double) -> String {
-    let secondsTotal = Int(mins * 60);
+    var secondsTotal = Int(mins * 60);
+    let hours = (secondsTotal % 216000) / 3600
+  
+    secondsTotal -= hours * 3600
+    
     let minutes = (secondsTotal % 3600) / 60
     let seconds = secondsTotal % 60
     
-    var secondsString = String(seconds)
     
-    if secondsString.count == 1 {
-        secondsString = "0" + secondsString
+    if hours >  0 {
+        return String(hours) + ":" + addZeroIfNeeded(number: String(minutes)) + ":" + addZeroIfNeeded(number: String(seconds))
     }
     
-    return String(minutes) + ":" + secondsString
+    return String(minutes) + ":" + addZeroIfNeeded(number: String(seconds))
+}
+
+private func addZeroIfNeeded(number: String) -> String {
+    if number.count == 1 {
+        return "0" + number
+    }
+    return number
 }
 
 func roundOnTwoDecimalPlaces(value: Double) -> Double {

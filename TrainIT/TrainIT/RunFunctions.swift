@@ -143,7 +143,7 @@ func calculateValuesAfterSelectedRun(runCollection: Array<Run>, selectedRun: Run
     avgLength = avgLength/Double(number)
     avgMinutesTotal = avgMinutesTotal/Double(number)
     
-    return (number,avgLength,avgMinutesTotal,lastRun)
+    return (number,roundOnTwoDecimalPlaces(value: avgLength),avgMinutesTotal,lastRun)
 }
 
 enum TrophyVisualizationStatus {
