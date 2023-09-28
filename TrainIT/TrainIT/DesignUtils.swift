@@ -16,6 +16,14 @@ var defaultGradient: LinearGradient {
     )
 }
 
+var calculationGradient: LinearGradient {
+    LinearGradient(
+        gradient: Gradient(colors: [.red, .orange]),
+        startPoint: .top,
+        endPoint: .bottom
+    )
+}
+
 struct FigureOnListElement: View {
     var isWithTrophy: Bool
     
