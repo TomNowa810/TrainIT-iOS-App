@@ -349,7 +349,7 @@ struct RunInsight: View {
                         
                         Spacer()
                         
-                    }
+                    }.padding(.top, 15)
                     HStack {
                         Text(DateFormatter.displayDate.string(from: run.date))
                             .font(.system(size:15))
@@ -369,7 +369,7 @@ struct RunInsight: View {
                     .fill(.white)
                     .shadow(color: Color.indigo.opacity(0.5), radius: 20)
                     .frame(width: 30, height: 30)
-                    .overlay(Image(systemName: "trash")                             // TODO -> convert 2 Btn
+                    .overlay(Image(systemName: "multiply")                             // TODO -> convert 2 Btn
                         .frame(width: 100, height: 100)
                         .foregroundColor(.indigo))
                 
@@ -414,7 +414,7 @@ struct RunInsight: View {
                 }
                 
                 VStack(spacing: 20){
-                    HStack(spacing: 100) {
+                    HStack(spacing: 80) {
                         ComparisonNavigationLinkStruct(
                             calcValue: avgLength.formatted(),
                             value: run.length.formatted(),
@@ -440,14 +440,16 @@ struct RunInsight: View {
                     }
                 }
                 
-                Divider().frame(width: 250)
-                
             } else {
                NoStatisticOnInsightView(numberOfRuns: numberOfRuns)
             }
             
             Spacer()
         }
+        .frame(width: 320, height: 525)
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .shadow(radius: 40)
     }
 }
 
@@ -571,7 +573,7 @@ struct NavigationLinkRow: View {
                 Spacer()
             }
             
-        }.font(.system(size: 20))
+        }.font(.system(size: 15))
             .fontWeight(.light)
     }
 }
