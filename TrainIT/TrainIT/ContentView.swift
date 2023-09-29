@@ -504,34 +504,54 @@ struct NoStatisticOnInsightView: View {
     var numberOfRuns: Int
     
     var body: some View {
-        VStack(spacing: 20) {
-            Spacer()
+        VStack(spacing: 30) {
             
             Image(systemName: "figure.mixed.cardio")
                 .resizable()
-                .foregroundStyle(defaultGradient)
+                .foregroundStyle(calculationGradient)
                 .frame(width: 80, height: 100)
-                .opacity(0.4)
+                .opacity(0.5)
             
-            Spacer()
             
             if numberOfRuns == 1 {
-                Text("Vorletzte Läufe haben keine Statistiken zur Verfügung!")
+                VStack {
+                    Text("Vorletzte Läufe haben keine Statistiken")
+                    
+                    HStack(spacing: 0) {
+                        Text("zu den ")
+                        
+                        Text("folgenden ")
+                            .fontWeight(.regular)
+                        
+                        Text("Läufen")
+                        
+                    }
+                }
+                .fontWeight(.thin)
+                
                 
             } else if numberOfRuns == 0 {
-                Text("Letzte Läufe haben keine Statistiken zur Verfügung!")
+                VStack {
+                    Text("Letzte Läufe haben keine Statistiken")
+                    
+                    HStack(spacing: 0) {
+                        Text("zu den ")
+                        
+                        Text("folgenden ")
+                            .fontWeight(.regular)
+                        
+                        Text("Läufen")
+                        
+                    }
+                }
                 
             }
             
-            Text("Hier würdest du weitere Statistiken zu deinen folgenen Läufen sehen")
-                .italic()
-                .font(.system(size: 15))
-                .foregroundColor(.gray)
-            
-            Spacer()
-            
-        }.multilineTextAlignment(.center)
-            .fontWeight(.light)
+        }
+        .frame(width: 320)
+        .multilineTextAlignment(.center)
+        .fontWeight(.light)
+        .font(.system(size: 16))
     }
 }
 
@@ -594,10 +614,10 @@ struct RunInsightDetailRow: View {
                 Text(value)
                     .foregroundStyle(defaultGradient)
                     .font(.system(size: 20))
-
+                
                 Text(unit)
                     .font(.system(size: 6))
-                    .padding(.top, 6.0)
+                    .padding(.top, 8.0)
                     .foregroundColor(.gray)
                 
                 Spacer()
