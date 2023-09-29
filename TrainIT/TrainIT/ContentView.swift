@@ -37,67 +37,107 @@ struct ContentView: View {
             improvement: ImprovementEnum.deteriorated
         )]
     
+    @State var showDetails: Bool = false
+    @State var selectedRun: Run?
+    
     var body: some View {
-        TabView {
-            NavigationStack {
-                List {
+        ZStack {
+            TabView {
+                NavigationView {
                     
-                    if !runCollection.isEmpty {
-                        Section {
-                            ForEach(runCollection) {
-                                run in
-                                NavigationLink(destination: RunInsight(run: run, runCollection: $runCollection)){
-                                    RunListElement(run: run)
-                                }
-                            }.onDelete(perform: deleteRun)
-                        }
-                        if runCollection.count == 1 {
-                            OnlyOneRunMask()
-                        }
-                    } else {
-                        EmptyRunsListMask()
-                    }
+                    AllRunsView(
+                        showRunSheet: $showRunSheet,
+                        runCollection: $runCollection,
+                        show: $showDetails,
+                        selectedRun: $selectedRun
+                    )
                     
-                    if runCollection.count > 1 {
-                        Section(header: Text("Auswertung")) {
-                            CalculationView(runCollection: $runCollection)
-                        }
-                    }
                 }
-                .navigationTitle("Alle Läufe")
-                .navigationBarItems(
-                    trailing:
-                        Button(action: {
-                            showRunSheet.toggle()},
-                               label: {
-                                   Circle()
-                                       .fill(.white)
-                                       .frame(width: 30, height: 30)
-                                       .overlay(
-                                        Image(systemName: "plus")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                            .foregroundColor(.indigo)
-                                       )
-                                       .padding()
-                                       .shadow(color: Color.indigo.opacity(0.2), radius: 7)
-                                       .opacity(0.85)
-                               })
-                )
-            }.sheet(isPresented: $showRunSheet, content: {
-                AddRunSheet(showRunSheet: $showRunSheet, runCollection: $runCollection)
-            })
-            .tabItem{
-                Image(systemName: "figure.run.square.stack")
-                Text("Alle Läufe (" + runCollection.count.formatted() + ")")
+                .blur(radius: showDetails ? 10 : 0)
+                .sheet(isPresented: $showRunSheet, content: {
+                    AddRunSheet(showRunSheet: $showRunSheet, runCollection: $runCollection)
+                })
+                .tabItem{
+                    Image(systemName: "figure.run.square.stack")
+                    Text("Alle Läufe (" + runCollection.count.formatted() + ")")
+                }
+                
+                // HOME - Übersicht
+                Text("Überblick").shiny()
+                    .tabItem {
+                        Image(systemName: "medal")
+                        Text("Überblick")
+                    }
+            }.accentColor(.indigo.opacity(0.8))
+            
+            
+            if showDetails {
+                RunInsight(run: selectedRun!, runCollection: $runCollection, showDetails: $showDetails)
             }
-            // HOME - Übersicht
-            Text("Überblick").shiny()
-                .tabItem {
-                    Image(systemName: "medal")
-                    Text("Überblick")
+        }
+    }
+}
+
+struct AllRunsView: View {
+    @Binding var showRunSheet: Bool
+    @Binding var runCollection: Array<Run>
+    
+    @Binding var show: Bool
+    @Binding var selectedRun: Run?
+    
+    var body: some View {
+        ZStack {
+            List {
+                
+                if !runCollection.isEmpty {
+                    Section {
+                        ForEach(runCollection) {
+                            run in
+                            
+                            RunListElement(run: run)
+                                .onTapGesture {
+                                    selectedRun = run
+                                    show = true
+                                }
+                            
+                        }
+                        //.onDelete(perform: deleteRun)
+                    }
+                    if runCollection.count == 1 {
+                        OnlyOneRunMask()
+                    }
+                } else {
+                    EmptyRunsListMask()
                 }
-        }.accentColor(.indigo.opacity(0.8))
+                
+                if runCollection.count > 1 {
+                    Section(header: Text("Auswertung")) {
+                        CalculationView(runCollection: $runCollection)
+                    }
+                }
+            }
+            .disabled(show)
+            .navigationTitle("Alle Läufe")
+            .navigationBarItems(
+                trailing:
+                    Button(action: {
+                        showRunSheet.toggle()},
+                           label: {
+                               Circle()
+                                   .fill(.white)
+                                   .frame(width: 30, height: 30)
+                                   .overlay(
+                                    Image(systemName: "plus")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundColor(.indigo)
+                                   )
+                                   .padding()
+                                   .shadow(color: Color.indigo.opacity(0.2), radius: 7)
+                                   .opacity(0.85)
+                           })
+            )
+        }
     }
     func deleteRun(at offset: IndexSet) {
         runCollection.remove(atOffsets: offset)
@@ -113,7 +153,7 @@ struct AddRunSheet: View {
     
     @Binding var showRunSheet: Bool
     @Binding var runCollection: Array<Run>
-
+    
     @State private var kmTextFieldColor: Color = .gray.opacity(0.2)
     @State private var minutesTextFieldColor: Color = .gray.opacity(0.2)
     @State private var secondsTextFieldColor: Color = .gray.opacity(0.2)
@@ -121,9 +161,9 @@ struct AddRunSheet: View {
     @State private var isKmFieldEmpty: Bool = false
     @State private var isMinsFieldEmpty: Bool = false
     @State private var isSecsFieldEmpty: Bool = false
-
+    
     @State private var isSecsInCorrectRange: Bool = true
-
+    
     
     var body: some View {
         VStack{
@@ -138,20 +178,20 @@ struct AddRunSheet: View {
                 VStack {
                     Button(role: .cancel,
                            action: {
-                                showRunSheet.toggle()},
+                        showRunSheet.toggle()},
                            label: {
-                                Circle()
-                                    .fill(.white)
-                                    .frame(width: 30, height: 30)
-                                    .overlay(
-                                        Image(systemName: "multiply")
-                                            .resizable()
-                                            .foregroundColor(.indigo)
-                                            .frame(width: 15, height: 15)
-                                    )
-                                    .padding()
-                                    .shadow(color: Color.indigo.opacity(0.6), radius: 21)
-                                    .opacity(0.8)
+                        Circle()
+                            .fill(.white)
+                            .frame(width: 30, height: 30)
+                            .overlay(
+                                Image(systemName: "multiply")
+                                    .resizable()
+                                    .foregroundColor(.indigo)
+                                    .frame(width: 15, height: 15)
+                            )
+                            .padding()
+                            .shadow(color: Color.indigo.opacity(0.6), radius: 21)
+                            .opacity(0.8)
                     }
                     )
                     Spacer()
@@ -175,9 +215,9 @@ struct AddRunSheet: View {
                     TextField("Anzahl der Kilometer", text: $kilometerAmount)
                         .keyboardType(.decimalPad)
                         .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(kmTextFieldColor, lineWidth: 1)
-                            )
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(kmTextFieldColor, lineWidth: 1)
+                        )
                         .multilineTextAlignment(.center)
                 }
                 
@@ -191,9 +231,9 @@ struct AddRunSheet: View {
                     TextField("Anzahl der Minuten", text: $minutesAmount)
                         .keyboardType(.numberPad)
                         .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(minutesTextFieldColor, lineWidth: 1)
-                            )
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(minutesTextFieldColor, lineWidth: 1)
+                        )
                         .multilineTextAlignment(.center)
                 }
                 
@@ -207,9 +247,9 @@ struct AddRunSheet: View {
                     TextField("Anzahl der Sekunden", text: $secondsAmount)
                         .keyboardType(.numberPad)
                         .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(secondsTextFieldColor, lineWidth: 1)
-                            )
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(secondsTextFieldColor, lineWidth: 1)
+                        )
                         .multilineTextAlignment(.center)
                 }
                 
@@ -306,7 +346,7 @@ struct AddRunSheet: View {
 }
 
 struct AddRunClockSymbol: View {
-
+    
     let unitDescription: String
     
     var body: some View {
@@ -336,6 +376,7 @@ struct AddRunClockSymbol: View {
 struct RunInsight: View {
     var run: Run
     @Binding var runCollection: Array<Run>
+    @Binding var showDetails : Bool
     
     var body: some View {
         VStack(spacing: 30) {
@@ -365,13 +406,19 @@ struct RunInsight: View {
                 
                 Spacer()
                 
-                Circle()
-                    .fill(.white)
-                    .shadow(color: Color.indigo.opacity(0.5), radius: 20)
-                    .frame(width: 30, height: 30)
-                    .overlay(Image(systemName: "multiply")                             // TODO -> convert 2 Btn
-                        .frame(width: 100, height: 100)
-                        .foregroundColor(.indigo))
+                Button(action: {
+                    showDetails = false
+                }, label: {
+                    Circle()
+                        .fill(.white)
+                        .shadow(color: Color.indigo.opacity(0.5), radius: 20)
+                        .frame(width: 30, height: 30)
+                        .overlay(
+                            
+                            Image(systemName: "multiply")
+                                .frame(width: 100, height: 100)
+                                .foregroundColor(.indigo))
+                })
                 
                 
                 
@@ -380,19 +427,19 @@ struct RunInsight: View {
             
             Divider().frame(width: 250)
             
-            NavigationLinkRow(
+            RunInsightDetailRow(
                 rowDescription: "Strecke",
                 value: run.length.formatted(),
                 unit: "km",
                 trophyStatus: trophyCheckOnValueByUuid(id: run.id, isKmChecked: true))
             
-            NavigationLinkRow(
+            RunInsightDetailRow(
                 rowDescription: "Zeit",
                 value: convertMinutesToStringForView(mins: run.minutesTotal),
                 unit: "",
                 trophyStatus: TrophyVisualizationStatus.trophyLessRow)
             
-            NavigationLinkRow(
+            RunInsightDetailRow(
                 rowDescription: "Durchschnitt",
                 value: convertMinutesToStringForView(mins: run.averageMinPerKm),
                 unit: "m/km",
@@ -400,7 +447,7 @@ struct RunInsight: View {
             
             Divider().frame(width: 250)
             
-            let (numberOfRuns, avgLength, avgMinsTotal, lastRun) = calculateValuesAfterSelectedRun(runCollection: runCollection, selectedRun: run)
+            let (numberOfRuns, avgLength, avgMinsTotal) = calculateValuesAfterSelectedRun(runCollection: runCollection, selectedRun: run)
             
             if runCollection.count > 2 && numberOfRuns > 1{
                 
@@ -441,7 +488,7 @@ struct RunInsight: View {
                 }
                 
             } else {
-               NoStatisticOnInsightView(numberOfRuns: numberOfRuns)
+                NoStatisticOnInsightView(numberOfRuns: numberOfRuns)
             }
             
             Spacer()
@@ -527,7 +574,7 @@ struct ComparisonNavigationLinkStruct: View {
     }
 }
 
-struct NavigationLinkRow: View {
+struct RunInsightDetailRow: View {
     var rowDescription: String
     var value: String
     var unit: String
@@ -536,6 +583,25 @@ struct NavigationLinkRow: View {
     var body: some View {
         HStack(spacing: 0) {
             HStack {
+                Spacer()
+                
+                Text(rowDescription + " : ")
+                    .font(.system(size: 16))
+            }
+            
+            HStack(spacing: 5) {
+                
+                Text(value)
+                    .foregroundStyle(defaultGradient)
+                    .font(.system(size: 20))
+
+                Text(unit)
+                    .font(.system(size: 6))
+                    .padding(.top, 6.0)
+                    .foregroundColor(.gray)
+                
+                Spacer()
+                
                 if trophyStatus != TrophyVisualizationStatus.trophyLessRow {
                     if trophyStatus == TrophyVisualizationStatus.none {
                         Image(systemName: "viewfinder")
@@ -555,26 +621,10 @@ struct NavigationLinkRow: View {
                             .shadow(color: .yellow, radius: 15)
                     }
                 }
-                
-                Spacer()
-                
-                Text(rowDescription + " : ")
             }
-            
-            HStack {
-                
-                Text(value)
-                    .foregroundStyle(defaultGradient)
-                
-                Text(unit)
-                    .font(.system(size: 10))
-                    .padding(.top, 6.0)
-                
-                Spacer()
-            }
-            
-        }.font(.system(size: 15))
-            .fontWeight(.light)
+            .padding(.trailing, 20)
+        }
+        .fontWeight(.light)
     }
 }
 
@@ -592,8 +642,6 @@ struct RunListElement: View {
     
     var body: some View {
         HStack(spacing: space) {
-            Spacer()
-                .frame(width: 14.0)
             
             HStack {
                 FigureOnListElement(isWithTrophy: trophyCheckByUuid(id: run.id))
@@ -639,7 +687,9 @@ struct RunListElement: View {
                     Text("m\\km").font(.system(size: 10)).foregroundColor(.gray)
                 }
             }
-        }.padding().frame(width: 400.0, height: 60.0)
+        }
+        .padding(.top, 5)
+        .padding(.bottom, 5)
     }
 }
 
@@ -831,14 +881,14 @@ struct CalculationPageStructure: View {
                 }
             }
         }.padding()
-        .containerRelativeFrame(/*@START_MENU_TOKEN@*/.horizontal/*@END_MENU_TOKEN@*/, count: 1, spacing:  350.0)
-        .scrollTransition { content, phase in
-            content
-                .opacity(phase.isIdentity ? 1.0 : 0.0)
-                .scaleEffect(x: phase.isIdentity ? 1.0 : 0.3,
-                             y: phase.isIdentity ? 1.0 : 0.3)
-                .offset(y: phase.isIdentity ? 0: 50)
-        }
+            .containerRelativeFrame(/*@START_MENU_TOKEN@*/.horizontal/*@END_MENU_TOKEN@*/, count: 1, spacing:  350.0)
+            .scrollTransition { content, phase in
+                content
+                    .opacity(phase.isIdentity ? 1.0 : 0.0)
+                    .scaleEffect(x: phase.isIdentity ? 1.0 : 0.3,
+                                 y: phase.isIdentity ? 1.0 : 0.3)
+                    .offset(y: phase.isIdentity ? 0: 50)
+            }
     }
 }
 

@@ -118,13 +118,11 @@ func createSecondStringPart(seconds: Int) -> String {
 func calculateValuesAfterSelectedRun(runCollection: Array<Run>, selectedRun: Run) -> (
     number: Int,
     avgLength: Double,
-    avgMinutesTotal: Double,
-    lastRun: Run
+    avgMinutesTotal: Double
 ){
     var number: Int = 0
     var avgLength: Double = 0
     var avgMinutesTotal: Double = 0
-    let lastRun: Run = runCollection.last!
     
     var isSelectedRunReached: Bool = false
     
@@ -143,7 +141,7 @@ func calculateValuesAfterSelectedRun(runCollection: Array<Run>, selectedRun: Run
     avgLength = avgLength/Double(number)
     avgMinutesTotal = avgMinutesTotal/Double(number)
     
-    return (number,roundOnTwoDecimalPlaces(value: avgLength),avgMinutesTotal,lastRun)
+    return (number,roundOnTwoDecimalPlaces(value: avgLength),avgMinutesTotal)
 }
 
 enum TrophyVisualizationStatus {
