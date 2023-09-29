@@ -443,41 +443,46 @@ struct RunInsight: View {
                 Divider().frame(width: 250)
                 
             } else {
-                VStack(spacing: 20) {
-                    Spacer()
-                    
-                    Image(systemName: "figure.mixed.cardio")
-                        .resizable()
-                        .foregroundStyle(defaultGradient)
-                        .frame(width: 80, height: 100)
-                        .opacity(0.4)
-                    
-                    Spacer()
-                    
-                    if numberOfRuns == 1 {
-                        Text("Vorletzte Läufe haben keine Statistiken zur Verfügung!")
-                        
-                    } else if numberOfRuns == 0 {
-                        Text("Letzte Läufe haben keine Statistiken zur Verfügung!")
-                        
-                    }
-                    
-                    Text("Hier würdest du weitere Statistiken zu deinen folgenen Läufen sehen")
-                        .italic()
-                        .font(.system(size: 15))
-                        .foregroundColor(.gray)
-                    
-                    Spacer()
-                    
-                }.multilineTextAlignment(.center)
-                    .fontWeight(.light)
+               NoStatisticOnInsightView(numberOfRuns: numberOfRuns)
             }
-            
-  
-            
             
             Spacer()
         }
+    }
+}
+
+struct NoStatisticOnInsightView: View {
+    var numberOfRuns: Int
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Spacer()
+            
+            Image(systemName: "figure.mixed.cardio")
+                .resizable()
+                .foregroundStyle(defaultGradient)
+                .frame(width: 80, height: 100)
+                .opacity(0.4)
+            
+            Spacer()
+            
+            if numberOfRuns == 1 {
+                Text("Vorletzte Läufe haben keine Statistiken zur Verfügung!")
+                
+            } else if numberOfRuns == 0 {
+                Text("Letzte Läufe haben keine Statistiken zur Verfügung!")
+                
+            }
+            
+            Text("Hier würdest du weitere Statistiken zu deinen folgenen Läufen sehen")
+                .italic()
+                .font(.system(size: 15))
+                .foregroundColor(.gray)
+            
+            Spacer()
+            
+        }.multilineTextAlignment(.center)
+            .fontWeight(.light)
     }
 }
 
@@ -642,7 +647,7 @@ struct CalculationView: View {
     var body: some View {
         let (kmMax, kmAvg, kmMin, minAvg, maxAvg, avgMinsPerKm) = calculateRunValues(runCollection: runCollection)
         
-        ScrollView(.horizontal, showsIndicators: true) {
+        ScrollView(.horizontal, showsIndicators: false) {
             ScrollViewReader {
                 value in
                 
@@ -680,7 +685,7 @@ struct CalculationView: View {
                         ),
                         thirdValue: kmMin.formatted(),
                         scrollViewProxy: value
-                    ).id(1)
+                    )
                     
                     CalculationPageStructure(
                         headline: "Zeit",
@@ -714,9 +719,29 @@ struct CalculationView: View {
                         ),
                         thirdValue: convertMinutesToStringForView(mins: maxAvg),
                         scrollViewProxy: value
-                    ).id(2)
-                }
+                    )
+                }.scrollTargetLayout()
             }
+        }
+        .scrollTargetBehavior(.viewAligned)
+    }
+}
+
+struct ScrollViewIndexPoints: View {
+    var isFirstObject: Bool
+    
+    var body: some View {
+        let firstColor: Color = isFirstObject ? .gray : Color("GrayWhite")
+        let secondColor: Color = isFirstObject ? Color("GrayWhite") : .gray
+        
+        HStack(spacing: 5) {
+            Circle()
+                .fill(firstColor)
+                .frame(width: 6)
+            
+            Circle()
+                .fill(secondColor)
+                .frame(width: 6)
         }
     }
 }
@@ -740,19 +765,13 @@ struct CalculationPageStructure: View {
     var body: some View {
         HStack {
             VStack {
+                
                 HStack {
-                    
-                    if(!isFirstView) {
-                        Button(action: {
-                            scrollViewProxy.scrollTo(1)
-                        }, label: {
-                            Image(systemName: "return")
-                                .resizable()
-                                .frame(width: 13, height: 10)
-                                .foregroundColor(.gray)
-                        })
-                    }
-                    
+                    Spacer()
+                    ScrollViewIndexPoints(isFirstObject: isFirstView)
+                }
+                
+                HStack {
                     Spacer()
                     
                     Text(headline)
@@ -765,18 +784,6 @@ struct CalculationPageStructure: View {
                         .foregroundColor(.secondary)
                     
                     Spacer()
-                    
-                    
-                    if(isFirstView) {
-                        Button(action: {
-                            scrollViewProxy.scrollTo(2)
-                        }, label: {
-                            Image(systemName: "arrow.turn.up.right")
-                                .resizable()
-                                .frame(width: 13, height: 10)
-                                .foregroundColor(.gray)
-                        })
-                    }
                 }
                 
                 Divider().frame(width: 150.0)
@@ -821,7 +828,15 @@ struct CalculationPageStructure: View {
                     }
                 }
             }
-        }.padding().frame(width: 350.0, height: 130.0)
+        }.padding()
+        .containerRelativeFrame(/*@START_MENU_TOKEN@*/.horizontal/*@END_MENU_TOKEN@*/, count: 1, spacing:  350.0)
+        .scrollTransition { content, phase in
+            content
+                .opacity(phase.isIdentity ? 1.0 : 0.0)
+                .scaleEffect(x: phase.isIdentity ? 1.0 : 0.3,
+                             y: phase.isIdentity ? 1.0 : 0.3)
+                .offset(y: phase.isIdentity ? 0: 50)
+        }
     }
 }
 
@@ -842,7 +857,7 @@ struct TypeDescriptionForCalculationValue: View {
             if isFirstView {
                 
                 VStack{
-                    Spacer()
+                    Spacer().frame(height: 7)
                     Text("km's")
                         .font(.system(size: 9))
                         .foregroundColor(.gray)
