@@ -1,6 +1,6 @@
-Modify RunInsight-Sheet (Run Insight)
+Modify RunInsight -> add scrollview to calculations 
 
-Integrate Chart
+Integrate Charts -> with scrollview
 
 Integrate point system/scala
 
