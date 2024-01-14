@@ -241,3 +241,42 @@ struct NoStatisticOnInsightView: View {
         .font(.system(size: 16))
     }
 }
+
+struct ComparisonNavigationLinkStruct: View {
+    var calcValue: String
+    var value: String
+    var unitDescription: String
+    
+    var body: some View {
+        HStack {
+            VStack {
+                Image(systemName: "arrow.up.arrow.down")
+                    .resizable()
+                    .frame(width: 8, height: 8)
+            }
+            VStack(spacing: 0) {
+                Text(calcValue)
+                    .foregroundStyle(calculationGradient)
+                
+                Divider().frame(width: 25)
+                
+                Text(value)
+                    .foregroundStyle(defaultGradient)
+                    .opacity(0.4)
+            }
+            VStack {
+                Rectangle()
+                    .fill(.white)
+                    .frame(width: 30, height: 20)
+                    .overlay(
+                        Text("Ø")
+                        , alignment: .leading)
+                    .overlay(
+                        Text(unitDescription)
+                            .font(.system(size: 6))
+                            .foregroundColor(.gray)
+                        , alignment: .bottomTrailing)
+            }
+        }.padding(.leading, 20)
+    }
+}
