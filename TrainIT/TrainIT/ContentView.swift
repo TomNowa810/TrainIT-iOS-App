@@ -419,9 +419,6 @@ struct RunInsight: View {
                                 .frame(width: 100, height: 100)
                                 .foregroundColor(.indigo))
                 })
-                
-                
-                
             }.padding(.trailing, 30.0)
             
             
@@ -503,6 +500,39 @@ struct RunInsight: View {
 struct NoStatisticOnInsightView: View {
     var numberOfRuns: Int
     
+    
+    @ViewBuilder
+    var buildDescription: some View {
+        if numberOfRuns == 1 {
+            VStack {
+                Text("Vorletzte Läufe haben keine Statistiken")
+                
+                HStack(spacing: 0) {
+                    Text("zu den ")
+                    
+                    Text("folgenden ")
+                        .fontWeight(.regular)
+                    
+                    Text("Läufen")
+                }
+            }.fontWeight(.thin)
+            
+        } else if numberOfRuns == 0 {
+            VStack {
+                Text("Letzte Läufe haben keine Statistiken")
+                
+                HStack(spacing: 0) {
+                    Text("zu den ")
+                    
+                    Text("folgenden ")
+                        .fontWeight(.regular)
+                    
+                    Text("Läufen")
+                }
+            }
+        }
+    }
+    
     var body: some View {
         VStack(spacing: 30) {
             
@@ -512,40 +542,7 @@ struct NoStatisticOnInsightView: View {
                 .frame(width: 80, height: 100)
                 .opacity(0.5)
             
-            
-            if numberOfRuns == 1 {
-                VStack {
-                    Text("Vorletzte Läufe haben keine Statistiken")
-                    
-                    HStack(spacing: 0) {
-                        Text("zu den ")
-                        
-                        Text("folgenden ")
-                            .fontWeight(.regular)
-                        
-                        Text("Läufen")
-                        
-                    }
-                }
-                .fontWeight(.thin)
-                
-                
-            } else if numberOfRuns == 0 {
-                VStack {
-                    Text("Letzte Läufe haben keine Statistiken")
-                    
-                    HStack(spacing: 0) {
-                        Text("zu den ")
-                        
-                        Text("folgenden ")
-                            .fontWeight(.regular)
-                        
-                        Text("Läufen")
-                        
-                    }
-                }
-                
-            }
+            buildDescription
             
         }
         .frame(width: 320)
@@ -600,6 +597,30 @@ struct RunInsightDetailRow: View {
     var unit: String
     var trophyStatus: TrophyVisualizationStatus
     
+    
+    @ViewBuilder
+    var buildTrophyVisualisation : some View {
+        if trophyStatus != TrophyVisualizationStatus.trophyLessRow {
+            if trophyStatus == TrophyVisualizationStatus.none {
+                Image(systemName: "viewfinder")
+                    .resizable()
+                    .frame(width: 15, height: 15)
+                    .foregroundColor(.gray)
+                    .padding(.leading, 30.0)
+            } else if trophyStatus == TrophyVisualizationStatus.trophy {
+                Image(systemName: "trophy")
+                    .resizable()
+                    .frame(width: 20, height: 25)
+                    .foregroundStyle(LinearGradient(
+                        gradient: Gradient(colors: [Color("TrophyPrimary"), Color("TrophySecondary")]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )).padding(.leading, 30.0)
+                    .shadow(color: .yellow, radius: 15)
+            }
+        }
+    }
+    
     var body: some View {
         HStack(spacing: 0) {
             HStack {
@@ -622,25 +643,8 @@ struct RunInsightDetailRow: View {
                 
                 Spacer()
                 
-                if trophyStatus != TrophyVisualizationStatus.trophyLessRow {
-                    if trophyStatus == TrophyVisualizationStatus.none {
-                        Image(systemName: "viewfinder")
-                            .resizable()
-                            .frame(width: 15, height: 15)
-                            .foregroundColor(.gray)
-                            .padding(.leading, 30.0)
-                    } else if trophyStatus == TrophyVisualizationStatus.trophy {
-                        Image(systemName: "trophy")
-                            .resizable()
-                            .frame(width: 20, height: 25)
-                            .foregroundStyle(LinearGradient(
-                                gradient: Gradient(colors: [Color("TrophyPrimary"), Color("TrophySecondary")]),
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )).padding(.leading, 30.0)
-                            .shadow(color: .yellow, radius: 15)
-                    }
-                }
+                buildTrophyVisualisation
+                
             }
             .padding(.trailing, 20)
         }
@@ -794,8 +798,7 @@ struct CalculationView: View {
                     )
                 }.scrollTargetLayout()
             }
-        }
-        .scrollTargetBehavior(.viewAligned)
+        }.scrollTargetBehavior(.viewAligned)
     }
 }
 
@@ -917,30 +920,33 @@ struct TypeDescriptionForCalculationValue: View {
     let value: String
     let isFirstView: Bool
     
+    
+    @ViewBuilder
+    var descriptionBuilder: some View {
+        if isFirstView {
+            VStack{
+                Spacer().frame(height: 7)
+                Text("km's")
+                    .font(.system(size: 9))
+                    .foregroundColor(.gray)
+            }
+        } else {
+            VStack {
+                Text("Ø").font(.system(size: 10))
+                Text("km\\m").font(.system(size: 9)).foregroundColor(.gray)
+            }
+        }
+    }
+    
     var body: some View {
         HStack{
-            
             Text(value)
                 .font(.system(size: 20))
             
             Spacer()
                 .frame(width: 4.0)
             
-            if isFirstView {
-                
-                VStack{
-                    Spacer().frame(height: 7)
-                    Text("km's")
-                        .font(.system(size: 9))
-                        .foregroundColor(.gray)
-                }
-                
-            } else {
-                VStack {
-                    Text("Ø").font(.system(size: 10))
-                    Text("km\\m").font(.system(size: 9)).foregroundColor(.gray)
-                }
-            }
+            descriptionBuilder
         }
     }
 }
@@ -955,48 +961,36 @@ struct CalculationSymbol: View {
     var color: Color
     var content: String
     
-    var body: some View {
-        if(!isArrow) {
-            Circle()
-                .fill(.gray)
-                .frame(width: 30, height: 30)
-                .overlay(
-                    Image(systemName: imageName)
-                        .resizable()
-                        .frame(width: imageWidth, height: imageHeight)
-                        .foregroundColor(.white)
-                )
-                .overlay(
-                    Circle()
-                        .fill(Color.white)
-                        .frame(width: 13, height: 13)
-                        .overlay(
-                            Text(content)
-                                .font(.system(size: 10))
-                        )
-                    , alignment: .bottomTrailing)
+    @ViewBuilder
+    var overlayContent: some View {
+        if !isArrow {
+            Text(content).font(.system(size: 10))
         } else {
-            Circle()
-                .fill(.gray)
-                .frame(width: 30, height: 30)
-                .overlay(
-                    Image(systemName: imageName)
-                        .resizable()
-                        .frame(width: imageWidth, height: imageHeight)
-                        .foregroundColor(.white)
-                )
-                .overlay(
-                    Circle()
-                        .fill(Color.white)
-                        .frame(width: 13, height: 13)
-                        .overlay(
-                            Image(systemName: content)
-                                .resizable()
-                                .frame(width: 6, height: 8)
-                                .foregroundColor(color)
-                        )
-                    , alignment: .bottomTrailing)
+            Image(systemName: content)
+                .resizable()
+                .frame(width: 6, height: 8)
+                .foregroundColor(color)
         }
+    }
+    
+    var body: some View {
+        Circle()
+            .fill(.gray)
+            .frame(width: 30, height: 30)
+            .overlay(
+                Image(systemName: imageName)
+                    .resizable()
+                    .frame(width: imageWidth, height: imageHeight)
+                    .foregroundColor(.white)
+            )
+            .overlay(
+                Circle()
+                    .fill(Color.white)
+                    .frame(width: 13, height: 13)
+                    .overlay(
+                        overlayContent
+                    )
+                , alignment: .bottomTrailing)
     }
 }
 
