@@ -11,6 +11,7 @@
 		F94CF4B02B5451E00097FC39 /* RunEvaluation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94CF4AF2B5451E00097FC39 /* RunEvaluation.swift */; };
 		F94CF4B22B545B5D0097FC39 /* RunInsights.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94CF4B12B545B5D0097FC39 /* RunInsights.swift */; };
 		F94CF4B42B545E0C0097FC39 /* RunList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94CF4B32B545E0C0097FC39 /* RunList.swift */; };
+		F94CF4B62B54606C0097FC39 /* AddRunSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94CF4B52B54606C0097FC39 /* AddRunSheet.swift */; };
 		F9597DBE2A9FF1A200F8977C /* Masks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9597DBD2A9FF1A100F8977C /* Masks.swift */; };
 		F97070432A7FF72000F658AB /* TrainITApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F97070422A7FF72000F658AB /* TrainITApp.swift */; };
 		F97070452A7FF72000F658AB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F97070442A7FF72000F658AB /* ContentView.swift */; };
@@ -27,6 +28,7 @@
 		F94CF4AF2B5451E00097FC39 /* RunEvaluation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunEvaluation.swift; sourceTree = "<group>"; };
 		F94CF4B12B545B5D0097FC39 /* RunInsights.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunInsights.swift; sourceTree = "<group>"; };
 		F94CF4B32B545E0C0097FC39 /* RunList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunList.swift; sourceTree = "<group>"; };
+		F94CF4B52B54606C0097FC39 /* AddRunSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddRunSheet.swift; sourceTree = "<group>"; };
 		F9597DBD2A9FF1A100F8977C /* Masks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Masks.swift; sourceTree = "<group>"; };
 		F970703F2A7FF72000F658AB /* TrainIT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrainIT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F97070422A7FF72000F658AB /* TrainITApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainITApp.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 		F97070412A7FF72000F658AB /* TrainIT */ = {
 			isa = PBXGroup;
 			children = (
+				F94CF4B52B54606C0097FC39 /* AddRunSheet.swift */,
 				F94CF4B32B545E0C0097FC39 /* RunList.swift */,
 				F94CF4B12B545B5D0097FC39 /* RunInsights.swift */,
 				F94CF4AF2B5451E00097FC39 /* RunEvaluation.swift */,
@@ -170,6 +173,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F97070452A7FF72000F658AB /* ContentView.swift in Sources */,
+				F94CF4B62B54606C0097FC39 /* AddRunSheet.swift in Sources */,
 				F9A5ECA62ABB5E8B00E3DC1F /* DesignUtils.swift in Sources */,
 				F9597DBE2A9FF1A200F8977C /* Masks.swift in Sources */,
 				F94CF4B02B5451E00097FC39 /* RunEvaluation.swift in Sources */,
