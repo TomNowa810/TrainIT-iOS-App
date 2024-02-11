@@ -63,7 +63,7 @@ struct ContentView: View {
                 }
                 
                 // HOME - Übersicht
-                Text("Überblick").shiny()
+                PieChart(runCollection: $runCollection, goalValue: 30)
                     .tabItem {
                         Image(systemName: "medal")
                         Text("Überblick")

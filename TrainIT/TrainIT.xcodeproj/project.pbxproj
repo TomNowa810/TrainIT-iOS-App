@@ -13,6 +13,7 @@
 		F94CF4B42B545E0C0097FC39 /* RunList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94CF4B32B545E0C0097FC39 /* RunList.swift */; };
 		F94CF4B62B54606C0097FC39 /* AddRunSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94CF4B52B54606C0097FC39 /* AddRunSheet.swift */; };
 		F9597DBE2A9FF1A200F8977C /* Masks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9597DBD2A9FF1A100F8977C /* Masks.swift */; };
+		F95F27532B795E6E00E1F88D /* PieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95F27522B795E6E00E1F88D /* PieChart.swift */; };
 		F97070432A7FF72000F658AB /* TrainITApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F97070422A7FF72000F658AB /* TrainITApp.swift */; };
 		F97070452A7FF72000F658AB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F97070442A7FF72000F658AB /* ContentView.swift */; };
 		F97070472A7FF72100F658AB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F97070462A7FF72100F658AB /* Assets.xcassets */; };
@@ -30,6 +31,7 @@
 		F94CF4B32B545E0C0097FC39 /* RunList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunList.swift; sourceTree = "<group>"; };
 		F94CF4B52B54606C0097FC39 /* AddRunSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddRunSheet.swift; sourceTree = "<group>"; };
 		F9597DBD2A9FF1A100F8977C /* Masks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Masks.swift; sourceTree = "<group>"; };
+		F95F27522B795E6E00E1F88D /* PieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChart.swift; sourceTree = "<group>"; };
 		F970703F2A7FF72000F658AB /* TrainIT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrainIT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F97070422A7FF72000F658AB /* TrainITApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainITApp.swift; sourceTree = "<group>"; };
 		F97070442A7FF72000F658AB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 		F97070412A7FF72000F658AB /* TrainIT */ = {
 			isa = PBXGroup;
 			children = (
+				F95F27522B795E6E00E1F88D /* PieChart.swift */,
 				F94CF4B52B54606C0097FC39 /* AddRunSheet.swift */,
 				F94CF4B32B545E0C0097FC39 /* RunList.swift */,
 				F94CF4B12B545B5D0097FC39 /* RunInsights.swift */,
@@ -127,7 +130,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					F970703E2A7FF72000F658AB = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -181,6 +184,7 @@
 				F94CF4B42B545E0C0097FC39 /* RunList.swift in Sources */,
 				F97070522A7FF7C400F658AB /* Run.swift in Sources */,
 				F94CB6FE2A92850900282E1D /* RunFunctions.swift in Sources */,
+				F95F27532B795E6E00E1F88D /* PieChart.swift in Sources */,
 				F9A56E582A91083D00CA7FE4 /* FormatUtils.swift in Sources */,
 				F97070432A7FF72000F658AB /* TrainITApp.swift in Sources */,
 			);
@@ -225,6 +229,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -285,6 +290,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
