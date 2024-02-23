@@ -17,7 +17,7 @@ struct AllRunsView: View {
                         ForEach(runCollection) {
                             run in
                             
-                            RunListElement(run: run)
+                            RunListElement(runCollection: $runCollection, run: run)
                                 .onTapGesture {
                                     selectedRun = run
                                     show = true
@@ -69,6 +69,7 @@ struct AllRunsView: View {
 
 struct RunListElement: View {
     @ScaledMetric var space = 8
+    @Binding var runCollection : Array<Run>
     
     var run: Run
     
@@ -83,7 +84,7 @@ struct RunListElement: View {
         HStack(spacing: space) {
             
             HStack {
-                FigureOnListElement(run: run)
+                FigureOnListElement(runCollection: $runCollection, run: run)
             }
             
             HStack {
@@ -133,7 +134,7 @@ struct RunListElement: View {
 }
 
 struct FigureOnListElement: View {
-    
+    @Binding var runCollection : Array<Run>
     var run: Run
     
     var body: some View {
