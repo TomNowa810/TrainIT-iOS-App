@@ -4,7 +4,8 @@ import Charts
 
 struct PieChart: View {
     @Binding var runCollection: Array<Run>
-    var goalValue: Int
+    @Binding var goalValue: Int
+    var size: CGFloat
     
     var visualizedValues: Array<PieChartData> {
         if runCollection.count >= goalValue {
@@ -27,7 +28,7 @@ struct PieChart: View {
                     .foregroundStyle(value.color)
                 }
             }.padding()
-        }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 100)
+        }.frame(width: size, height: size)
     }
 }
 

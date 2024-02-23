@@ -5,6 +5,8 @@ struct ContentView: View {
     
     @State var showRunSheet: Bool = false
     
+    @State var goalValue: Int = 30
+    
     @State var runCollection: Array<Run> = [
         Run(
             number: 1,
@@ -63,7 +65,8 @@ struct ContentView: View {
                 }
                 
                 // HOME - Übersicht
-                PieChart(runCollection: $runCollection, goalValue: 30)
+                OverlayView(runCollection: $runCollection, goalValue: $goalValue)
+                
                     .tabItem {
                         Image(systemName: "medal")
                         Text("Überblick")

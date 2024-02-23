@@ -83,7 +83,7 @@ struct RunListElement: View {
         HStack(spacing: space) {
             
             HStack {
-                FigureOnListElement(isWithTrophy: trophyCheckByUuid(id: run.id))
+                FigureOnListElement(run: run)
             }
             
             HStack {
@@ -129,5 +129,27 @@ struct RunListElement: View {
         }
         .padding(.top, 5)
         .padding(.bottom, 5)
+    }
+}
+
+struct FigureOnListElement: View {
+    
+    var run: Run
+    
+    var body: some View {
+        if trophyCheckByUuid(id: run.id) {
+            DefaultFigure()
+                .overlay(
+                    Image(systemName: "trophy.fill")
+                        .resizable()
+                        .frame(width: 10, height: 12)
+                        .foregroundStyle(LinearGradient(
+                            gradient: Gradient(colors: [.yellow, Color("TrophyPrimary")]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )), alignment: .bottomTrailing)
+        } else {
+            DefaultFigure()
+        }
     }
 }

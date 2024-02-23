@@ -24,28 +24,7 @@ var calculationGradient: LinearGradient {
     )
 }
 
-struct FigureOnListElement: View {
-    var isWithTrophy: Bool
-    
-    var body: some View {
-        if isWithTrophy {
-            DefaultFigure()
-                .overlay(
-                    Image(systemName: "trophy.fill")
-                        .resizable()
-                        .frame(width: 10, height: 12)
-                        .foregroundStyle(LinearGradient(
-                            gradient: Gradient(colors: [.yellow, Color("TrophyPrimary")]),
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )), alignment: .bottomTrailing)
-        } else {
-            DefaultFigure()
-        }
-    }
-}
-
-private struct DefaultFigure: View {
+struct DefaultFigure: View {
     var body: some View {
         Rectangle()
             .fill(.white)
