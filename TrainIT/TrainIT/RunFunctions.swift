@@ -11,7 +11,7 @@ import SwiftUI
 var bestKmOfAllRuns_runRefrenceByUuid: UUID? = nil
 var bestAvgOfAllRuns_runRefrenceByUuid: UUID? = nil
 
-func calculateRunValues(runCollection: Array<Run>) -> (
+func calculateRunValues(runCollectionBinding: Binding<Array<Run>>) -> (
     kmMax: Double,
     kmAvg: Double,
     kmMin: Double,
@@ -19,18 +19,18 @@ func calculateRunValues(runCollection: Array<Run>) -> (
     maxAvg: Double,
     avgMinsPerKm: Double
 ) {
+    let runArray: Array<Run> = runCollectionBinding.wrappedValue
     var kmMax: Double = 0
     var bestKm_runUuid: UUID?
-    
     var kmAvg: Double = 0
-    var kmMin: Double = runCollection.first?.length ?? 9999
-    var minAvg: Double = runCollection.first?.averageMinPerKm ?? 9999
+    var kmMin: Double = runArray.first?.length ?? 9999
+    var minAvg: Double = runArray.first?.averageMinPerKm ?? 9999
     var bestAvg_runUuid: UUID?
-
+    
     var maxAvg: Double = 0
     var avgMinsPerKm: Double = 0
     
-    for run in runCollection {
+    for run in runArray {
         if kmMin > run.length {
             kmMin = run.length
         }
@@ -53,16 +53,44 @@ func calculateRunValues(runCollection: Array<Run>) -> (
         avgMinsPerKm += run.averageMinPerKm
     }
     kmMax = roundOnTwoDecimalPlaces(value: kmMax)
-    kmAvg = roundAndDeviceByRunElements(value: kmAvg, divisionValue:  Double(runCollection.count))
+    kmAvg = roundAndDeviceByRunElements(value: kmAvg, divisionValue:  Double(runArray.count))
     kmMin = roundOnTwoDecimalPlaces(value: kmMin)
     minAvg = roundOnTwoDecimalPlaces(value: minAvg)
     maxAvg = roundOnTwoDecimalPlaces(value: maxAvg)
-    avgMinsPerKm = roundAndDeviceByRunElements(value: avgMinsPerKm, divisionValue: Double(runCollection.count))
+    avgMinsPerKm = roundAndDeviceByRunElements(value: avgMinsPerKm, divisionValue: Double(runArray.count))
     
     bestKmOfAllRuns_runRefrenceByUuid = bestKm_runUuid
     bestAvgOfAllRuns_runRefrenceByUuid = bestAvg_runUuid
     
     return (kmMax, kmAvg, kmMin, minAvg, maxAvg, avgMinsPerKm)
+}
+
+func setTopValues(runCollectionBinding: Binding<Array<Run>>) {
+    let runArray: Array<Run> = runCollectionBinding.wrappedValue
+    var kmMax: Double = 0
+    var bestKm_runUuid: UUID?
+    var kmAvg: Double = 0
+    var minAvg: Double = runArray.first?.averageMinPerKm ?? 9999
+    var bestAvg_runUuid: UUID?
+    var avgMinsPerKm: Double = 0
+    
+    for run in runArray {
+        if minAvg > run.averageMinPerKm {
+            minAvg = run.averageMinPerKm
+            bestAvg_runUuid = run.id
+        }
+        
+        if kmMax < run.length {
+            kmMax = run.length
+            bestKm_runUuid = run.id
+        }
+        
+        kmAvg += run.length
+        avgMinsPerKm += run.averageMinPerKm
+    }
+    
+    bestKmOfAllRuns_runRefrenceByUuid = bestKm_runUuid
+    bestAvgOfAllRuns_runRefrenceByUuid = bestAvg_runUuid
 }
 
 func arrowValues(run: Run) -> (

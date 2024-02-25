@@ -9,61 +9,71 @@ struct AllRunsView: View {
     @Binding var selectedRun: Run?
     
     var body: some View {
-        ZStack {
-            List {
-                
-                if !runCollection.isEmpty {
-                    Section {
-                        ForEach(runCollection) {
-                            run in
-                            
-                            RunListElement(runCollection: $runCollection, run: run)
-                                .onTapGesture {
-                                    selectedRun = run
-                                    show = true
-                                }
-                            
+        TopValuesSetter(runCollectionBinding: $runCollection) {
+            ZStack {
+                List {
+                    if !runCollection.isEmpty {
+                        Section {
+                            ForEach(runCollection) {
+                                run in
+                                
+                                RunListElement(runCollection: $runCollection, run: run)
+                                    .onTapGesture {
+                                        selectedRun = run
+                                        show = true
+                                    }
+                                
+                            }
+                            //.onDelete(perform: deleteRun)
                         }
-                        //.onDelete(perform: deleteRun)
-                    }
-                    if runCollection.count == 1 {
-                        OnlyOneRunMask()
-                    }
-                } else {
-                    EmptyRunsListMask()
-                }
-                
-                if runCollection.count > 1 {
-                    Section(header: Text("Auswertung")) {
-                        CalculationView(runCollection: $runCollection)
+                        if runCollection.count == 1 {
+                            OnlyOneRunMask()
+                        }
+                    } else {
+                        EmptyRunsListMask()
                     }
                 }
+                .disabled(show)
+                .navigationTitle("Alle Läufe")
+                .navigationBarItems(
+                    trailing:
+                        Button(action: {
+                            showRunSheet.toggle()},
+                               label: {
+                                   Circle()
+                                       .fill(.white)
+                                       .frame(width: 30, height: 30)
+                                       .overlay(
+                                        Image(systemName: "plus")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(.indigo)
+                                       )
+                                       .padding()
+                                       .shadow(color: Color.indigo.opacity(0.2), radius: 7)
+                                       .opacity(0.85)
+                               })
+                )
             }
-            .disabled(show)
-            .navigationTitle("Alle Läufe")
-            .navigationBarItems(
-                trailing:
-                    Button(action: {
-                        showRunSheet.toggle()},
-                           label: {
-                               Circle()
-                                   .fill(.white)
-                                   .frame(width: 30, height: 30)
-                                   .overlay(
-                                    Image(systemName: "plus")
-                                        .resizable()
-                                        .frame(width: 20, height: 20)
-                                        .foregroundColor(.indigo)
-                                   )
-                                   .padding()
-                                   .shadow(color: Color.indigo.opacity(0.2), radius: 7)
-                                   .opacity(0.85)
-                           })
-            )
         }
     }
     func deleteRun(at offset: IndexSet) {
         runCollection.remove(atOffsets: offset)
+    }
+    
+    private struct TopValuesSetter<Content: View>: View {
+        @Binding var runCollection: Array<Run>
+        let content: () -> Content
+        
+        init(runCollectionBinding: Binding<Array<Run>>, @ViewBuilder content: @escaping () -> Content) {
+            self._runCollection = runCollectionBinding
+            self.content = content
+            setTopValues(runCollectionBinding: runCollectionBinding)
+        }
+        
+        var body: some View {
+            content()
+        }
     }
 }
 

@@ -5,7 +5,7 @@ struct CalculationView: View {
     @Binding var runCollection: Array<Run>
     
     var body: some View {
-        let (kmMax, kmAvg, kmMin, minAvg, maxAvg, avgMinsPerKm) = calculateRunValues(runCollection: runCollection)
+        let (kmMax, kmAvg, kmMin, minAvg, maxAvg, avgMinsPerKm) = calculateRunValues(runCollectionBinding: $runCollection)
         
         ScrollView(.horizontal, showsIndicators: false) {
             ScrollViewReader {

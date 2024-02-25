@@ -69,10 +69,10 @@ struct ContentView: View {
                 
                     .tabItem {
                         Image(systemName: "medal")
-                        Text("Überblick")
+                        Text("Auswertung")
                     }
             }.accentColor(.indigo.opacity(0.8))
-            
+
             
             if showDetails {
                 RunInsight(run: selectedRun!, runCollection: $runCollection, showDetails: $showDetails)
