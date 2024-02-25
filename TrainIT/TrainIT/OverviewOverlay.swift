@@ -10,9 +10,9 @@ struct OverlayView: View {
             ZStack {
                 Color("ListBackground").ignoresSafeArea()
                 
-                CircleBorderView().shadow(radius: 5)
+                CircleView(runCollection: $runCollection, goalValue: $goalValue, withInsights: false).shadow(radius: 5)
                 BorderView(runCollection: $runCollection, goalValue: $goalValue).shadow(radius: 5)
-                CircleWithInsightsView(runCollection: $runCollection, goalValue: $goalValue)
+                CircleView(runCollection: $runCollection, goalValue: $goalValue, withInsights: true)
             }
         }
     }
@@ -48,27 +48,38 @@ struct CircleBorderView : View {
     }
 }
 
-struct CircleWithInsightsView: View {
+struct CircleView: View {
     @Binding var runCollection: Array<Run>
     @Binding var goalValue: Int
+    var withInsights: Bool
+    
+    var baseCircle: some View {
+        Circle()
+            .fill(.white)
+            .frame(width: 150, height: 150)
+            .ignoresSafeArea()
+    }
+    
+    @ViewBuilder
+    var circle: some View {
+        if withInsights {
+            baseCircle
+                .overlay(PieView(runCollection: $runCollection, goalValue: $goalValue))
+        } else {
+            baseCircle
+        }
+    }
     
     var body: some View {
         VStack {
             HStack {
-                Spacer()
-                Circle()
-                    .fill(.white)
-                    .frame(width: 150, height: 150)
-                    .ignoresSafeArea()
-                    .overlay(PieView(runCollection: $runCollection, goalValue: $goalValue))
+                Spacer().frame(width: 255)
+                circle
             }
             Spacer()
         }.ignoresSafeArea()
     }
 }
-
-
-
 
 struct PieView: View {
     @Binding var runCollection: Array<Run>
