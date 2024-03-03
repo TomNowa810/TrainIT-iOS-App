@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 
 struct CalculationView: View {
+    
     @Binding var runCollection: Array<Run>
     
     var body: some View {
@@ -13,7 +14,7 @@ struct CalculationView: View {
                 
                 HStack(spacing: 100) {
                     
-                    CalculationPageStructure(
+                    CalculationPageView(
                         headline: "Distanz",
                         isFirstView: true,
                         firstSymbol:
@@ -47,7 +48,7 @@ struct CalculationView: View {
                         scrollViewProxy: value
                     )
                     
-                    CalculationPageStructure(
+                    CalculationPageView(
                         headline: "Zeit",
                         isFirstView: false,
                         firstSymbol:
@@ -87,7 +88,7 @@ struct CalculationView: View {
 }
 
 
-struct CalculationPageStructure: View {
+struct CalculationPageValueStructure: View {
     
     let headline: String
     let isFirstView: Bool
@@ -101,10 +102,11 @@ struct CalculationPageStructure: View {
     let thirdSymbol: CalculationSymbol
     let thirdValue: String
     
-    let scrollViewProxy: ScrollViewProxy
-    
     var body: some View {
         HStack {
+            
+            Spacer().frame(width: 10)
+            
             VStack {
                 
                 HStack {
@@ -169,7 +171,39 @@ struct CalculationPageStructure: View {
                     }
                 }
             }
-        }.padding()
+            
+            Spacer().frame(width: 10)
+            
+        }
+    }
+}
+
+struct CalculationPageView: View {
+    
+    let headline: String
+    let isFirstView: Bool
+    
+    let firstSymbol: CalculationSymbol
+    let firstValue: String
+    
+    let secondSymbol: CalculationSymbol
+    let secondValue: String
+    
+    let thirdSymbol: CalculationSymbol
+    let thirdValue: String
+    
+    let scrollViewProxy: ScrollViewProxy
+    
+    var body: some View {
+        Rectangle()
+            .fill(.white)
+            .cornerRadius(15)
+            .frame(width: 350, height: 150)
+            .overlay(CalculationPageValueStructure(headline: headline, isFirstView: isFirstView,
+                                                   firstSymbol: firstSymbol, firstValue: firstValue,
+                                                   secondSymbol: secondSymbol, secondValue: secondValue,
+                                                   thirdSymbol: thirdSymbol, thirdValue: thirdValue))
+            .padding()
             .containerRelativeFrame(/*@START_MENU_TOKEN@*/.horizontal/*@END_MENU_TOKEN@*/, count: 1, spacing:  350.0)
             .scrollTransition { content, phase in
                 content

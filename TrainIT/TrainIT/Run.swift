@@ -1,10 +1,3 @@
-//
-//  Run.swift
-//  Testproject
-//
-//  Created by Tom Nowakowski on 06.08.23.
-//
-
 import Foundation
 
 
