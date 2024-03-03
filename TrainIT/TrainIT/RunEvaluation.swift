@@ -87,6 +87,92 @@ struct CalculationView: View {
     }
 }
 
+struct CalculationViewRefactored: View {
+    
+    @Binding var runCollection: Array<Run>
+    
+    var body: some View {
+        let (kmMax, kmAvg, kmMin, minAvg, maxAvg, avgMinsPerKm) = calculateRunValues(runCollectionBinding: $runCollection)
+        
+        ScrollView(.horizontal, showsIndicators: false) {
+            ScrollViewReader {
+                value in
+                
+                HStack(spacing: 100) {
+                    
+                    CalculationPageViewRefactored(
+                        headline: "Distanz",
+                        isFirstView: true,
+                        firstSymbol:
+                            CalculationSymbol(
+                                imageName: "road.lanes",
+                                imageWidth: 22,
+                                imageHeight: 20,
+                                isArrow: false,
+                                color: .gray,
+                                content: "Ø")
+                        ,
+                        firstValue: kmAvg.formatted()
+                        , secondSymbol: CalculationSymbol(
+                            imageName: "road.lanes",
+                            imageWidth: 22,
+                            imageHeight: 20,
+                            isArrow: true,
+                            color: .green,
+                            content: "arrow.up"
+                        ),
+                        secondValue: kmMax.formatted(),
+                        thirdSymbol: CalculationSymbol(
+                            imageName: "road.lanes",
+                            imageWidth: 22,
+                            imageHeight: 20,
+                            isArrow: true,
+                            color: .red,
+                            content: "arrow.down"
+                        ),
+                        thirdValue: kmMin.formatted(),
+                        scrollViewProxy: value
+                    )
+                    
+                    CalculationPageViewRefactored(
+                        headline: "Zeit",
+                        isFirstView: false,
+                        firstSymbol:
+                            CalculationSymbol(
+                                imageName: "clock.arrow.2.circlepath",
+                                imageWidth: 24,
+                                imageHeight: 20,
+                                isArrow: false,
+                                color: .gray,
+                                content: "Ø")
+                        ,
+                        firstValue: convertMinutesToStringForView(mins: avgMinsPerKm)
+                        , secondSymbol: CalculationSymbol(
+                            imageName: "clock.arrow.2.circlepath",
+                            imageWidth: 24,
+                            imageHeight: 20,
+                            isArrow: true,
+                            color: .green,
+                            content: "arrow.up"
+                        ),
+                        secondValue: convertMinutesToStringForView(mins: minAvg),
+                        thirdSymbol: CalculationSymbol(
+                            imageName: "clock.arrow.2.circlepath",
+                            imageWidth: 24,
+                            imageHeight: 20,
+                            isArrow: true,
+                            color: .red,
+                            content: "arrow.down"
+                        ),
+                        thirdValue: convertMinutesToStringForView(mins: maxAvg),
+                        scrollViewProxy: value
+                    )
+                }.scrollTargetLayout()
+            }
+        }.scrollTargetBehavior(.viewAligned)
+    }
+}
+
 
 struct CalculationPageValueStructure: View {
     
@@ -178,6 +264,96 @@ struct CalculationPageValueStructure: View {
     }
 }
 
+struct CalculationPageValueStructureRefactored: View {
+    
+    let headline: String
+    let isFirstView: Bool
+    
+    let firstSymbol: CalculationSymbol
+    let firstValue: String
+    
+    let secondSymbol: CalculationSymbol
+    let secondValue: String
+    
+    let thirdSymbol: CalculationSymbol
+    let thirdValue: String
+    
+    var body: some View {
+        HStack {
+            
+            ZStack {
+                
+                //HStack {
+                //    Spacer()
+                //    ScrollViewIndexPoints(isFirstObject: isFirstView)
+                //}
+                
+                HStack {
+                    Rectangle()
+                        .frame(width: 85, height: 150)
+                        .cornerRadius(15)
+                        .scaledToFit()
+                        .foregroundColor(.gray)
+                    Spacer()
+                }
+                
+                HStack {
+                    Circle()
+                        .fill(.gray)
+                    //.frame(width: 30, height: 30)
+                        .overlay(
+                            HStack {
+                                
+                                Image(systemName: "road.lanes")
+                                    .resizable()
+                                    .frame(width: 100, height: 100)
+                                    .foregroundColor(.white)
+                                //.scaledToFit()
+                                Spacer().frame(width: 10)
+                                
+                            }).scaledToFit()
+                    Spacer()
+                }
+                
+                VStack(spacing: 20) {
+                    
+                    HStack {
+                        Spacer().frame(width: 30)
+                        Image(systemName: "arrow.up")
+                            .resizable()
+                            .frame(width: 12, height: 18)
+                            .foregroundColor(.green)
+                        TypeDescriptionForCalculationValue(value: secondValue, isFirstView: true)
+                    }.shadow(color: .green.opacity(0.2), radius: 1)
+                    
+                    HStack {
+                        Spacer().frame(width: 60)
+                        Text("Ø").font(.system(size: 20))
+                        TypeDescriptionForCalculationValue(value: firstValue, isFirstView: true)
+                    }.shadow(color: .gray.opacity(0.2), radius: 1)
+                    
+                    HStack {
+                        Spacer().frame(width: 30)
+                        Image(systemName: "arrow.down")
+                            .resizable()
+                            .frame(width: 12, height: 18)
+                            .foregroundColor(.red)
+                        TypeDescriptionForCalculationValue(value: thirdValue, isFirstView: true)
+                    }.shadow(color: .red.opacity(0.2), radius: 1)
+                }
+                
+                
+
+                
+
+                
+                
+            }
+            
+        }
+    }
+}
+
 struct CalculationPageView: View {
     
     let headline: String
@@ -203,6 +379,43 @@ struct CalculationPageView: View {
                                                    firstSymbol: firstSymbol, firstValue: firstValue,
                                                    secondSymbol: secondSymbol, secondValue: secondValue,
                                                    thirdSymbol: thirdSymbol, thirdValue: thirdValue))
+            .padding()
+            .containerRelativeFrame(/*@START_MENU_TOKEN@*/.horizontal/*@END_MENU_TOKEN@*/, count: 1, spacing:  350.0)
+            .scrollTransition { content, phase in
+                content
+                    .opacity(phase.isIdentity ? 1.0 : 0.0)
+                    .scaleEffect(x: phase.isIdentity ? 1.0 : 0.3,
+                                 y: phase.isIdentity ? 1.0 : 0.3)
+                    .offset(y: phase.isIdentity ? 0: 50)
+            }
+    }
+}
+
+struct CalculationPageViewRefactored: View {
+    
+    let headline: String
+    let isFirstView: Bool
+    
+    let firstSymbol: CalculationSymbol
+    let firstValue: String
+    
+    let secondSymbol: CalculationSymbol
+    let secondValue: String
+    
+    let thirdSymbol: CalculationSymbol
+    let thirdValue: String
+    
+    let scrollViewProxy: ScrollViewProxy
+    
+    var body: some View {
+        Rectangle()
+            .fill(.white)
+            .cornerRadius(15)
+            .frame(width: 350, height: 150)
+            .overlay(CalculationPageValueStructureRefactored(headline: headline, isFirstView: isFirstView,
+                                                             firstSymbol: firstSymbol, firstValue: firstValue,
+                                                             secondSymbol: secondSymbol, secondValue: secondValue,
+                                                             thirdSymbol: thirdSymbol, thirdValue: thirdValue))
             .padding()
             .containerRelativeFrame(/*@START_MENU_TOKEN@*/.horizontal/*@END_MENU_TOKEN@*/, count: 1, spacing:  350.0)
             .scrollTransition { content, phase in

@@ -13,8 +13,11 @@ struct OverlayView: View {
                 CircleView(runCollection: $runCollection, goalValue: $goalValue, withInsights: false).shadow(radius: 5)
                 BorderView(runCollection: $runCollection, goalValue: $goalValue).shadow(radius: 5)
                 CircleView(runCollection: $runCollection, goalValue: $goalValue, withInsights: true)
-
-                CalculationViewDistanceAndTime(runCollection: $runCollection)
+                
+                VStack {
+                    CalculationViewDistanceAndTime(runCollection: $runCollection)
+                    CalculationViewDistanceAndTimeRefactored(runCollection: $runCollection)
+                }
             }
         }
     }
@@ -26,6 +29,16 @@ struct CalculationViewDistanceAndTime: View {
     var body: some View {
         if runCollection.count > 1 {
             CalculationView(runCollection: $runCollection)
+        }
+    }
+}
+
+struct CalculationViewDistanceAndTimeRefactored: View {
+    @Binding var runCollection: Array<Run>
+    
+    var body: some View {
+        if runCollection.count > 1 {
+            CalculationViewRefactored(runCollection: $runCollection)
         }
     }
 }
